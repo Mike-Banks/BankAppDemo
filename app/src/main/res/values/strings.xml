@@ -1,0 +1,89 @@
+<resources>
+    <string name="app_name">BanksCorpFinancial</string>
+    <string name="incorrect_login">Incorrect Username or Password</string>
+    <string name="account_success">Account Successfully Created</string>
+    <string name="account_cancelled">Account Creation Cancelled</string>
+    <string name="welcome">Welcome,</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="no_account">Don\'t have a profile?</string>
+    <string name="create_acc">Create a Profile</string>
+    <string name="help">Need help?</string>
+    <string name="create_account">Create Profile</string>
+    <string name="cancel">Cancel</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="country">Country</string>
+    <string name="password_confirm">Confirm Password</string>
+    <string name="remember">Remember Credentials</string>
+    <string name="fields_blank">You have left one or more fields blank</string>
+    <string name="password_mismatch">You did not confirm your password properly</string>
+    <string name="accounts">Accounts</string>
+    <string name="happy">. Happy</string>
+    <string name="good_evening">Good evening</string>
+    <string name="good_afternoon">Good afternoon</string>
+    <string name="good_morning">Good morning</string>
+    <string name="dashboard">BANKING DASHBOARD</string>
+    <string name="account_overview">Account Overview</string>
+    <string name="create_initial_account">Create Initial Account</string>
+    <string name="account_name">Account name</string>
+    <string name="account_amount">Initial Account Deposit</string>
+    <string name="make_a_transfer">Make a Transfer</string>
+    <string name="make_a_payment">Make a Payment</string>
+    <string name="about">About</string>
+    <string name="account_no">Account no:</string>
+    <string name="acc_overview">ACCOUNTS OVERVIEW</string>
+    <string name="select_an_account">Select an Account</string>
+    <string name="view_account_details">View Account Details</string>
+    <string name="add_new_acc">Open new Account</string>
+    <string name="acc_saved_successfully">Account successfully added</string>
+    <string name="account_name_error">You already have an account with that name</string>
+    <string name="account_page_title">ACCOUNT</string>
+    <string name="transactions_title">TRANSACTIONS</string>
+    <string name="no_transaction_msg">You havn\'t made any transactions with this account yet</string>
+    <string name="payments">Payments</string>
+    <string name="transfers">Transfers</string>
+    <string name="payments_title">PAYMENTS</string>
+    <string name="select_acc_pay_from">Select an Account to Pay from</string>
+    <string name="txt_no_payees_msg">You do not have any Payees. Add one below</string>
+    <string name="select_payee_msg">Select a Payee</string>
+    <string name="add_payee_btn_txt">Add a Payee</string>
+    <string name="amount_for_payee">Amount</string>
+    <string name="add_payee_name">Payee Name</string>
+    <string name="confirm_payee_addition">Confirm Payee Addition</string>
+    <string name="make_payment_btn_msg">Make Payment</string>
+    <string name="account_name_exceeds_char">Account names must not exceed 10 characters</string>
+    <string name="balance_less_than_ten">The deposit must be more than $10</string>
+    <string name="acc_fields_incomplete">You have not completed the account fields</string>
+    <string name="str_transfers_title">TRANSFERS</string>
+    <string name="str_from_acc_msg">Select Sending Account</string>
+    <string name="str_to_acc_msg">Select Receiving Account</string>
+    <string name="str_transfer_amount">Transfer Amount</string>
+    <string name="str_confirm_transfer">Confirm Transfer</string>
+    <string name="no_second_acc_msg">You do not have another account to transfer to. Create another account to make a transfer</string>
+    <string name="str_no_payments_msg">You have not made any payments with this account yet</string>
+    <string name="str_no_transfers">You have not made any transfers with this account yet</string>
+    <string name="str_deposit_amount">Deposit Amount</string>
+    <string name="str_make_deposit_btn_text">Make Deposit</string>
+    <string name="str_make_deposit_btn">Make a Deposit</string>
+    <string name="logout">Logout</string>
+    <string name="about_str_title">ABOUT</string>
+    <string name="str_profile_info_title">PROFILE INFORMATION</string>
+    <string name="str_save_to_file">Save Profile to File</string>
+    <string name="str_developer_info_title">DEVELOPER INFO</string>
+    <string name="str_dev_name">Developer Name: Mike Banks</string>
+    <string name="str_dev_corp">Company: BanksCorp</string>
+    <string name="str_view_portfolio">View Developer Portfolio</string>
+
+    <string-array name="days">
+        <item>Sunday</item>
+        <item>Monday</item>
+        <item>Tuesday</item>
+        <item>Wednesday</item>
+        <item>Thursday</item>
+        <item>Friday</item>
+        <item>Saturday</item>
+    </string-array>
+
+</resources>
