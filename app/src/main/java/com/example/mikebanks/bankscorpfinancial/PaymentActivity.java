@@ -195,7 +195,7 @@ public class PaymentActivity extends Activity {
                 SharedPreferences.Editor prefsEditor = userPreferences.edit();
                 gson = new Gson();
                 json = gson.toJson(userProfile);
-                prefsEditor.putString("UserProfile", json);
+                prefsEditor.putString("LastProfileUsed", json);
                 prefsEditor.commit();
 
                 Toast.makeText(this, "Payee Added Successfully", Toast.LENGTH_SHORT).show();

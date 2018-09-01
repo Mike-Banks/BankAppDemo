@@ -24,7 +24,7 @@ public class CreateProfileActivity extends Activity {
     private EditText edtAccountAmount;
     private Button btnCreateAccount;
 
-    Intent intent;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
