@@ -134,6 +134,7 @@ public class AboutActivity extends Activity {
                 .append("Username: " + userProfile.getUsername() + "\n")
                 .append("Password: " + userProfile.getPassword() + "\n");
 
+        //TODO: Write accounts, payees and transactions to text file
         //convert the string builder to a string
         String toFile = String.format("%s", builder);
 

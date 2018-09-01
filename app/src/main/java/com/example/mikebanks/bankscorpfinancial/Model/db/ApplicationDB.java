@@ -189,12 +189,12 @@ public class ApplicationDB {
     }
 
     //TODO: Clear Transaction history?
-    public Transaction saveNewTransaction(Profile profile, Account account, Transaction transaction) {
+    public Transaction saveNewTransaction(Profile profile, String accountNo, Transaction transaction) {
         database = openHelper.getWritableDatabase();
 
         ContentValues cv = new ContentValues();
         cv.put(PROFILE_ID, profile.getDbId());
-        cv.put(ACCOUNT_NO, account.toTransactionString());
+        cv.put(ACCOUNT_NO, accountNo);
         cv.put(TRANSACTION_ID, transaction.getTransactionID());
 
         if (transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.TRANSFER) {

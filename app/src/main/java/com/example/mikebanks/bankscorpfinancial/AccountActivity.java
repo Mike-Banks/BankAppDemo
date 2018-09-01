@@ -1,7 +1,6 @@
 package com.example.mikebanks.bankscorpfinancial;
 
 import android.app.Activity;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -12,10 +11,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mikebanks.bankscorpfinancial.Adapters.AccountAdapter;
 import com.example.mikebanks.bankscorpfinancial.Adapters.PaymentAdapter;
 import com.example.mikebanks.bankscorpfinancial.Adapters.TransferAdapter;
-import com.example.mikebanks.bankscorpfinancial.Model.Account;
 import com.example.mikebanks.bankscorpfinancial.Model.Profile;
 import com.example.mikebanks.bankscorpfinancial.Model.Transaction;
 import com.example.mikebanks.bankscorpfinancial.Model.Transaction.TRANSACTION_TYPE;

@@ -73,7 +73,6 @@
     <string name="str_save_to_file">Save Profile to File</string>
     <string name="str_developer_info_title">DEVELOPER INFO</string>
     <string name="str_dev_name">Developer Name: Mike Banks</string>
-    <string name="str_dev_corp">Company: BanksCorp</string>
     <string name="str_view_portfolio">View Developer Portfolio</string>
 
     <string-array name="days">

@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.mikebanks.bankscorpfinancial.Model.Account;
 import com.example.mikebanks.bankscorpfinancial.Model.Profile;
+import com.example.mikebanks.bankscorpfinancial.Model.db.ApplicationDB;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ public class TransferActivity extends Activity {
      */
     private void setValues() {
 
-        userPreferences = getSharedPreferences("userPreferences", MODE_PRIVATE);
+        userPreferences = getSharedPreferences("LastProfileUsed", MODE_PRIVATE);
 
         gson = new Gson();
         json = userPreferences.getString("LastProfileUsed", "");
@@ -115,20 +116,22 @@ public class TransferActivity extends Activity {
             String sendingAccString = sendingAcc.toTransactionString();
             String receivingAccString = receivingAcc.toTransactionString();
 
-            userProfile.getAccounts().get(sendingAccIndex).addTransferTransaction(sendingAccString, receivingAccString, transferAmount);
-            userProfile.getAccounts().get(receivingAccIndex).addTransferTransaction(sendingAccString, receivingAccString, transferAmount);
+            sendingAcc.addTransferTransaction(sendingAccString, receivingAccString, transferAmount);
+            receivingAcc.addTransferTransaction(sendingAccString, receivingAccString, transferAmount);
 
-            accounts = userProfile.getAccounts();
             spnSendingAccount.setAdapter(accountAdapter);
             spnReceivingAccount.setAdapter(accountAdapter);
 
             spnSendingAccount.setSelection(sendingAccIndex);
             spnReceivingAccount.setSelection(receivingAccIndex);
 
+            ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
+            applicationDb.saveNewTransaction(userProfile, sendingAccString, sendingAcc.getTransactions().get(sendingAcc.getTransactions().size()-1));
+            applicationDb.saveNewTransaction(userProfile, receivingAccString, receivingAcc.getTransactions().get(receivingAcc.getTransactions().size()-1));
+
             SharedPreferences.Editor prefsEditor = userPreferences.edit();
-            gson = new Gson();
             json = gson.toJson(userProfile);
-            prefsEditor.putString("UserProfile", json);
+            prefsEditor.putString("LastProfileUsed", json);
             prefsEditor.commit();
 
             Toast.makeText(this, "Transfer of $" + String.format("%.2f",transferAmount) + " successfully made", Toast.LENGTH_SHORT).show();
