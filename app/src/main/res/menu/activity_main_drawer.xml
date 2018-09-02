@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_dashboard"
+            android:icon="@drawable/dashboard_icon_24"
+            android:title="Dashboard" />
+        <item
+            android:id="@+id/nav_accounts"
+            android:icon="@drawable/icon_accounts_24"
+            android:title="Accounts" />
+        <item
+            android:id="@+id/nav_transfer"
+            android:icon="@drawable/icon_transfer_24"
+            android:title="Make a Transfer" />
+        <item
+            android:id="@+id/nav_payment"
+            android:icon="@drawable/icon_payment_24"
+            android:title="Make a Payment" />
+    </group>
+
+    <item android:title="Profile">
+        <menu>
+            <item
+                android:id="@+id/nav_settings"
+                android:title="Settings" />
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/icon_logout_24"
+                android:title="Logout" />
+        </menu>
+    </item>
+
+</menu>

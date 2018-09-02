@@ -75,6 +75,13 @@
     <string name="str_dev_name">Developer Name: Mike Banks</string>
     <string name="str_view_portfolio">View Developer Portfolio</string>
 
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <string-array name="days">
         <item>Sunday</item>
         <item>Monday</item>

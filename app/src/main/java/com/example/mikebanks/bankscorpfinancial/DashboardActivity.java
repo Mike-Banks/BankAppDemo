@@ -183,58 +183,15 @@ public class DashboardActivity extends Activity {
     }
 
     /**
-     * method used for creating the options menu
+     * method used for creating the options activity_main_drawer
      * @param menu
      * @return
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
+        inflater.inflate(R.menu.activity_main_drawer, menu);
         return true;
-    }
-
-    /**
-     * method used for handling clicks on menu items
-     * @param item
-     * @return
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        Intent intent;
-
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.accounts:
-                intent = new Intent(getApplicationContext(), AccountOverviewActivity.class);
-                startActivity(intent);
-                return true;
-            case R.id.transfers:
-                if (userProfile.getAccounts().size() > 1) {
-                    intent = new Intent(getApplicationContext(), TransferActivity.class);
-                    startActivity(intent);
-                    return true;
-                } else {
-                    displayDialog();
-                    return false;
-                }
-            case R.id.payments:
-                    intent = new Intent(getApplicationContext(), PaymentActivity.class);
-                    startActivity(intent);
-                    return true;
-            case R.id.about:
-                intent = new Intent(getApplicationContext(), AboutActivity.class);
-                startActivity(intent);
-                return true;
-            case R.id.logout:
-                intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
     }
 
     /**
