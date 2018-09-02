@@ -2,14 +2,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.mikebanks.bankscorpfinancial">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:icon="@drawable/ic_action_name"
         android:label="@string/app_name"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:supportsRtl="true">
-
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme.NoActionBar">
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -19,34 +21,35 @@
             </intent-filter>
         </activity>
         <activity
-            android:screenOrientation="portrait"
             android:name=".CreateProfileActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".LoginActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
-            android:name=".DashboardActivity" />
+            android:name=".DrawerActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
+            android:name=".DashboardActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".AccountOverviewActivity"
-            android:parentActivityName=".DashboardActivity" />
+            android:parentActivityName=".DashboardActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
             android:name=".AccountActivity"
-            android:parentActivityName=".AccountOverviewActivity" />
+            android:parentActivityName=".AccountOverviewActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
             android:name=".TransferActivity"
-            android:parentActivityName=".DashboardActivity" />
+            android:parentActivityName=".DashboardActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
             android:name=".PaymentActivity"
-            android:parentActivityName=".DashboardActivity"/>
+            android:parentActivityName=".DashboardActivity"
+            android:screenOrientation="portrait" />
         <activity
-            android:screenOrientation="portrait"
             android:name=".AboutActivity"
-            android:parentActivityName=".DashboardActivity"/>
+            android:parentActivityName=".DashboardActivity"
+            android:screenOrientation="portrait" />
     </application>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
 </manifest>

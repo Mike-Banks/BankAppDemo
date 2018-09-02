@@ -4,33 +4,19 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.mikebanks.bankscorpfinancial.Model.Profile;
 import com.example.mikebanks.bankscorpfinancial.Model.db.ApplicationDB;
 import com.google.gson.Gson;
-
 import java.util.ArrayList;
 
-import static com.example.mikebanks.bankscorpfinancial.R.id.toolbar;
-
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class LoginActivity extends AppCompatActivity {
 
     private EditText edtUsername;
     private EditText edtPassword;
@@ -38,8 +24,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private CheckBox chkRememberCred;
     private TextView txtAccountMsg;
     private Button btnCreateAccount;
-
-    private DrawerLayout drawerLayout;
 
     private static final int CREATE_ACCOUNT_ACTIVITY = 1;
 
@@ -64,62 +48,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_login);
 
-        //setupViews();
-        drawerLayout = findViewById(R.id.drawer_layout);
-
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        ActionBar actionbar = getSupportActionBar();
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navView = findViewById(R.id.nav_view);
-        navView.setNavigationItemSelectedListener(this);
-    }
-
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_dashboard) {
-            // Handle the dashboard action
-        } else if (id == R.id.nav_accounts) {
-
-        } else if (id == R.id.nav_transfer) {
-
-        } else if (id == R.id.nav_payment) {
-
-        } else if (id == R.id.nav_logout) {
-
-        }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
+        setupViews();
     }
 
     /**
      * method used to setup the values for the views and fields
      */
     private void setupViews() {
-        /*
+
         edtUsername = findViewById(R.id.edt_username);
         edtPassword = findViewById(R.id.edt_password);
         btnLogin = findViewById(R.id.btn_login);
@@ -145,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             //login();                                        //----- NOTE: This automatically logs in for the user
             //finish();                                       //----- NOTE: This ensures the user cannot return to the login screen by pressing the back button
         }
-        */
+
     }
 
     /**
@@ -194,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     prefsEditor.putString("LastProfileUsed", json);
                     prefsEditor.commit();
 
-                    intent = new Intent(getApplicationContext(), DashboardActivity.class);
+                    intent = new Intent(getApplicationContext(), DrawerActivity.class);
                     startActivity(intent);
                     finish();
                 }
