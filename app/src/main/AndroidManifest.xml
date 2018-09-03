@@ -28,26 +28,6 @@
             android:name=".DrawerActivity"
             android:parentActivityName=".LoginActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".AccountOverviewActivity"
-            android:parentActivityName=".DashboardActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".AccountActivity"
-            android:parentActivityName=".AccountOverviewActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".TransferActivity"
-            android:parentActivityName=".DashboardActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".PaymentActivity"
-            android:parentActivityName=".DashboardActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".AboutActivity"
-            android:parentActivityName=".DashboardActivity"
-            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
