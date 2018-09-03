@@ -1,3 +1,7 @@
+#**** NOTE ****
+
+The project is currently being overhauled to have a DrawerLayout as the main menu, with each screen as a Fragment, rather than an Activity.
+
 # BANK APP DEMO
 
 A Banking app made for Android using Android Studio. No real money is involved, it is a project to showcase my skills in Android and Java. The Application was developed using a MVC approach, with proper programming conventions and aappropriate data encapsulation.
