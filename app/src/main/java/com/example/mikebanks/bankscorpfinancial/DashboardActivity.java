@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -183,14 +182,14 @@ public class DashboardActivity extends Activity {
     }
 
     /**
-     * method used for creating the options activity_main_drawer
+     * method used for creating the options activity_drawer_menu
      * @param menu
      * @return
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.activity_main_drawer, menu);
+        inflater.inflate(R.menu.activity_drawer_menu, menu);
         return true;
     }
 
