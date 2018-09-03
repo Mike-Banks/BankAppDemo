@@ -1,108 +1,191 @@
 package com.example.mikebanks.bankscorpfinancial;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.TextView;
 
+import com.example.mikebanks.bankscorpfinancial.Adapters.AccountAdapter;
+import com.example.mikebanks.bankscorpfinancial.Model.Account;
+import com.example.mikebanks.bankscorpfinancial.Model.Payee;
+import com.example.mikebanks.bankscorpfinancial.Model.Profile;
+import com.example.mikebanks.bankscorpfinancial.Model.Transaction;
+import com.example.mikebanks.bankscorpfinancial.Model.db.ApplicationDB;
+import com.google.gson.Gson;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link DashboardFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link DashboardFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import static android.content.Context.MODE_PRIVATE;
+
 public class DashboardFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private TextView txtWelcome;
+    private ListView lstAccounts;
 
-    private OnFragmentInteractionListener mListener;
+    private SharedPreferences userPreferences;
+
+    private String json;
+    private Gson gson;
+    private Profile userProfile;
+
+    private View rootView;
 
     public DashboardFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DashboardFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DashboardFragment newInstance(String param1, String param2) {
-        DashboardFragment fragment = new DashboardFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_dashboard, container, false);
-    }
+        View rootView =  inflater.inflate(R.layout.fragment_dashboard, container, false);
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
+        txtWelcome = rootView.findViewById(R.id.txt_welcome);
+        lstAccounts = rootView.findViewById(R.id.lst_accounts);
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            //throw new RuntimeException(context.toString()
-              //      + " must implement OnFragmentInteractionListener");
-        }
+        setupViews();
+        return rootView;
+
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
+    public void onResume() {
+        json = userPreferences.getString("LastProfileUsed", "");
+        userProfile = gson.fromJson(json, Profile.class);
+
+        AccountAdapter adapter = new AccountAdapter(this.getActivity(), R.layout.lst_accounts, userProfile.getAccounts());
+        lstAccounts.setAdapter(adapter);
+
+        super.onResume();
+    }
+
+    private void loadPayees() {
+        ApplicationDB applicationDb = new ApplicationDB(getActivity().getApplicationContext());
+
+        ArrayList<Payee> payees = applicationDb.getPayeesFromCurrentProfile(userProfile.getDbId());
+
+        for (int i = 0; i < payees.size(); i++) {
+            userProfile.addPayee(payees.get(i).getPayeeName());
+        }
+    }
+
+    private void loadAccounts() {
+        ApplicationDB applicationDb = new ApplicationDB(getActivity().getApplicationContext());
+
+        ArrayList<Account> accounts = applicationDb.getAccountsFromCurrentProfile(userProfile.getDbId());
+
+        if (userProfile.getAccounts().size() == 0) {
+            for (int i = 0; i < accounts.size(); i++) {
+                userProfile.addAccount(accounts.get(i).getAccountName(), accounts.get(i).getAccountBalance());
+            }
+        }
+
+        AccountAdapter adapter = new AccountAdapter(this.getActivity(), R.layout.lst_accounts, accounts);
+        lstAccounts.setAdapter(adapter);
+    }
+
+    private void loadTransactions() {
+
+        ApplicationDB applicationDb = new ApplicationDB(getActivity().getApplicationContext());
+        ArrayList<Transaction> transactions;
+
+        for (int iAccount = 0; iAccount < userProfile.getAccounts().size(); iAccount++) {
+            transactions = applicationDb.getTransactionsFromCurrentAccount(userProfile.getDbId(), userProfile.getAccounts().get(iAccount).toTransactionString());
+            if (transactions.size() > 0 && userProfile.getAccounts().get(iAccount).getTransactions().size() == 0) {
+
+                for (int iTrans = 0; iTrans < transactions.size(); iTrans++) {
+                    userProfile.getAccounts().get(iAccount).addTransactionFromDB(transactions.get(iTrans));
+                }
+            }
+        }
     }
 
     /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
+     * method used to setup the values for the views and fields
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    private void setupViews() {
+
+        userPreferences = this.getActivity().getSharedPreferences("LastProfileUsed", MODE_PRIVATE);
+        gson = new Gson();
+        json = userPreferences.getString("LastProfileUsed", "");
+        userProfile = gson.fromJson(json, Profile.class);
+
+        loadAccounts();
+        loadPayees();
+        loadTransactions();
+
+        SharedPreferences.Editor prefsEditor = userPreferences.edit();
+        json = gson.toJson(userProfile);
+        prefsEditor.putString("LastProfileUsed", json).commit();
+
+        StringBuilder welcomeString = new StringBuilder();
+
+        Calendar calendar = Calendar.getInstance();
+
+        int timeOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+
+        if (timeOfDay >= 5 && timeOfDay < 12) {
+            welcomeString.append(getString(R.string.good_morning));
+        } else if (timeOfDay >= 12 && timeOfDay < 17) {
+            welcomeString.append(getString(R.string.good_afternoon));
+
+        } else {
+            welcomeString.append(getString(R.string.good_evening));
+        }
+
+        welcomeString.append(", ")
+                .append(userProfile.getFirstName())
+                .append(getString(R.string.happy))
+                .append(" ");
+
+        int day = calendar.get(Calendar.DAY_OF_WEEK);
+
+        String[] days = getResources().getStringArray(R.array.days);
+        String dow = "";
+
+        switch(day) {
+            case Calendar.SUNDAY:
+                dow = days[0];
+                break;
+            case Calendar.MONDAY:
+                dow = days[1];
+                break;
+            case Calendar.TUESDAY:
+                dow = days[2];
+                break;
+            case Calendar.WEDNESDAY:
+                dow = days[3];
+                break;
+            case Calendar.THURSDAY:
+                dow = days[4];
+                break;
+            case Calendar.FRIDAY:
+                dow = days[5];
+                break;
+            case Calendar.SATURDAY:
+                dow = days[6];
+                break;
+            default:
+                break;
+        }
+
+        welcomeString.append(dow)
+                .append(".");
+
+        txtWelcome.setText(welcomeString.toString());
     }
+
 }
