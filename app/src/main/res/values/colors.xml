@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#4A7023</color>
+    <color name="colorPrimary">#4a7023</color>
     <color name="colorPrimaryDark">#3B5323</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="drawerHeader">#717171</color>
+    <color name="drawerMenu">#e8e8e8</color>
 </resources>

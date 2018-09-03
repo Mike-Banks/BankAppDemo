@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,7 +23,10 @@ import com.google.gson.Gson;
 public class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private DrawerLayout drawerLayout;
-    NavigationView navView;
+    private NavigationView navView;
+
+    private Fragment fragment;
+    FragmentManager fragmentManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +48,10 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         navView.setNavigationItemSelectedListener(this);
 
         setupHeader();
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.flContent, new DashboardFragment()).commit();
+        navView.setCheckedItem(R.id.nav_dashboard);
     }
 
     private void setupHeader() {
@@ -82,7 +90,6 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
         // Handle navigation view item clicks here.
-        Fragment fragment;
         Class fragmentClass = null;
         String title = item.getTitle().toString();
 
@@ -108,22 +115,22 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
             default:
                 fragmentClass = DashboardFragment.class;
         }
+        try  {
 
-        try {
-            fragment = (Fragment) fragmentClass.newInstance();
+        fragment = (Fragment) fragmentClass.newInstance();
 
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+        fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
-            item.setChecked(true);
+        item.setChecked(true);
 
-            setTitle(title);
+        setTitle(title);
 
-            drawerLayout.closeDrawers();
+        drawerLayout.closeDrawers();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        return true;
+            return true;
     }
 }
