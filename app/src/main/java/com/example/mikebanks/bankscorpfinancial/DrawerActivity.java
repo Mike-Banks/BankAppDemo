@@ -1,6 +1,8 @@
 package com.example.mikebanks.bankscorpfinancial;
 
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -24,7 +26,6 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ActionBar actionbar = getSupportActionBar();
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
@@ -49,21 +50,52 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_dashboard) {
-            // Handle the dashboard action
-        } else if (id == R.id.nav_accounts) {
-
-        } else if (id == R.id.nav_transfer) {
-
-        } else if (id == R.id.nav_payment) {
-
-        } else if (id == R.id.nav_logout) {
-
+        Fragment fragment = null;
+        Class fragmentClass = null;
+        switch(item.getItemId()) {
+            case R.id.nav_dashboard:
+                //TODO:
+                fragmentClass = DashboardFragment.class;
+                break;
+            case R.id.nav_accounts:
+                //TODO:
+                break;
+            case R.id.nav_transfer:
+                //TODO:
+                break;
+            case R.id.nav_payment:
+                //TODO:
+                break;
+            case R.id.nav_settings:
+                //TODO:
+                break;
+            case R.id.nav_logout:
+                //TODO:
+                break;
+            default:
+                fragmentClass = DashboardFragment.class;
         }
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+
+        // Highlight the selected item has been done by NavigationView
+        item.setChecked(true);
+        // Set action bar title
+        setTitle(item.getTitle());
+        // Close the navigation drawer
+        drawerLayout.closeDrawers();
+
+
+        //DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        //drawer.closeDrawer(GravityCompat.START);
+
         return true;
     }
 }
