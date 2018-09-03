@@ -34,12 +34,6 @@ public class AboutActivity extends Activity {
 
     //TODO: Can be changed to save all the transactions as well - save statement to device?
 
-    private TextView txtProfileFirstName;
-    private TextView txtProfileLastName;
-    private TextView txtProfileCountry;
-    private TextView txtProfileUsername;
-    private TextView txtProfilePassword;
-
     private Button btnSaveProfile;
     private Button btnGotoPortfolio;
 
@@ -54,10 +48,7 @@ public class AboutActivity extends Activity {
         }
     };
 
-    private SharedPreferences userPreferences;
     private Profile userProfile;
-    private Gson gson;
-    private String json;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,17 +62,17 @@ public class AboutActivity extends Activity {
      * method used to setup the values for the views and fields
      */
     private void setValues() {
-        userPreferences = getSharedPreferences("LastProfileUsed", MODE_PRIVATE);
+        SharedPreferences userPreferences = getSharedPreferences("LastProfileUsed", MODE_PRIVATE);
 
-        gson = new Gson();
-        json = userPreferences.getString("LastProfileUsed", "");
+        Gson gson = new Gson();
+        String json = userPreferences.getString("LastProfileUsed", "");
         userProfile = gson.fromJson(json, Profile.class);
 
-        txtProfileFirstName = findViewById(R.id.txt_profile_first_name);
-        txtProfileLastName = findViewById(R.id.txt_profile_last_name);
-        txtProfileCountry = findViewById(R.id.txt_profile_country);
-        txtProfileUsername = findViewById(R.id.txt_profile_username);
-        txtProfilePassword = findViewById(R.id.txt_profile_password);
+        TextView txtProfileFirstName = findViewById(R.id.txt_profile_first_name);
+        TextView txtProfileLastName = findViewById(R.id.txt_profile_last_name);
+        TextView txtProfileCountry = findViewById(R.id.txt_profile_country);
+        TextView txtProfileUsername = findViewById(R.id.txt_profile_username);
+        TextView txtProfilePassword = findViewById(R.id.txt_profile_password);
 
         btnSaveProfile = findViewById(R.id.btn_save_to_file);
         btnGotoPortfolio = findViewById(R.id.btn_goto_portfolio);

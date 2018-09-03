@@ -26,9 +26,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".DrawerActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".DashboardActivity"
+            android:parentActivityName=".LoginActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".AccountOverviewActivity"

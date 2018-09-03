@@ -22,10 +22,10 @@ public class LoginActivity extends AppCompatActivity {
     private EditText edtPassword;
     private Button btnLogin;
     private CheckBox chkRememberCred;
-    private TextView txtAccountMsg;
     private Button btnCreateAccount;
 
     private static final int CREATE_ACCOUNT_ACTIVITY = 1;
+    private static final int BANKING_ACTIVITY = 2;
 
     private Profile lastProfileUsed;
     private Gson gson;
@@ -62,7 +62,6 @@ public class LoginActivity extends AppCompatActivity {
         edtPassword = findViewById(R.id.edt_password);
         btnLogin = findViewById(R.id.btn_login);
         chkRememberCred = findViewById(R.id.chk_remember);
-        txtAccountMsg = findViewById(R.id.txt_account_msg);
         btnCreateAccount = findViewById(R.id.btn_create_account);
 
         btnLogin.setOnClickListener(clickListener);
@@ -129,12 +128,10 @@ public class LoginActivity extends AppCompatActivity {
                     Editor prefsEditor = userPreferences.edit();
                     gson = new Gson();
                     json = gson.toJson(lastProfileUsed);
-                    prefsEditor.putString("LastProfileUsed", json);
-                    prefsEditor.commit();
+                    prefsEditor.putString("LastProfileUsed", json).commit();
 
                     intent = new Intent(getApplicationContext(), DrawerActivity.class);
-                    startActivity(intent);
-                    finish();
+                    startActivityForResult(intent, BANKING_ACTIVITY);
                 }
             }
             if (!match) {
@@ -177,11 +174,9 @@ public class LoginActivity extends AppCompatActivity {
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, R.string.account_cancelled, Toast.LENGTH_SHORT).show();
 
-                edtUsername.setText("");
-                edtPassword.setText("");
-                chkRememberCred.setChecked(false);
-
             }
+        } else if (requestCode == BANKING_ACTIVITY) {
+            Toast.makeText(this, "Logging out", Toast.LENGTH_SHORT).show();
         }
     }
 }
