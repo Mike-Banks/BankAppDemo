@@ -1,4 +1,4 @@
-**** NOTE ****
+# NOTE
 
 The project is currently being overhauled to have a DrawerLayout as the main menu, with each screen as a Fragment, rather than an Activity. Additionally, the Activities that are used will have a custom toolbar, which involves extending from Appcompat, rather than Activity.
 
