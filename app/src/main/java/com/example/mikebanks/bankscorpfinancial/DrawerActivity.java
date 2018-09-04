@@ -35,6 +35,8 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
     Profile userProfile;
 
+    //TODO: Load the databases here - use shared preferences (or fragment equivalent) the rest of the way
+
     private DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
@@ -159,6 +161,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
                 //TODO: Make Settings fragment
                 break;
             case R.id.nav_logout:
+                setResult(RESULT_OK);
                 finish();
                 break;
             default:

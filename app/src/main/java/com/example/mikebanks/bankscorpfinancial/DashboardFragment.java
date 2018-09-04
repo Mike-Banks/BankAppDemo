@@ -35,7 +35,9 @@ public class DashboardFragment extends Fragment {
     private Gson gson;
     private Profile userProfile;
 
-    private View rootView;
+    //TODO: Clicking on any account (the ListView in general - add clickListener to it?) will launch the Accounts Page
+    //TODO: Add some kind of back navigation for fragments? - research - fragmentStack does not work here for some reason (unless fragment is launched from another fragment)
+    //TODO: Pressing back goes to main android screen, rather than login screen - don;t start Drawer Activity for result, start it, and finish login act - when logging out with button, finish the drawer activity (maybe), start Login activity - still somehow display logging out message in login activity
 
     public DashboardFragment() {
         // Required empty public constructor

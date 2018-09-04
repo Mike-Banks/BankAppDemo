@@ -175,8 +175,13 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.account_cancelled, Toast.LENGTH_SHORT).show();
 
             }
+            //TODO: this will likely be removed, but if not, clean up this method (first check if result code is OK, then check is request code is either activity - less code, cleaner
         } else if (requestCode == BANKING_ACTIVITY) {
-            Toast.makeText(this, "Logging out", Toast.LENGTH_SHORT).show();
+            if (resultCode == RESULT_OK) {
+                Toast.makeText(this, "Logging out", Toast.LENGTH_SHORT).show();
+            } else if (resultCode == RESULT_CANCELED) {
+                finish();
+            }
         }
     }
 }
