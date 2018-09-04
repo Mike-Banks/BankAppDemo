@@ -20,19 +20,13 @@
             android:id="@+id/nav_payment"
             android:icon="@drawable/icon_payment_24"
             android:title="Make a Payment" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/settings_icon_24"
+            android:title="Settings" />
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/icon_logout_24"
+            android:title="Logout" />
     </group>
-
-    <item android:title="Profile">
-        <menu>
-            <item
-                android:id="@+id/nav_settings"
-                android:icon="@drawable/settings_icon_24"
-                android:title="Settings" />
-            <item
-                android:id="@+id/nav_logout"
-                android:icon="@drawable/icon_logout_24"
-                android:title="Logout" />
-        </menu>
-    </item>
-
 </menu>

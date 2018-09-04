@@ -1,5 +1,6 @@
 package com.example.mikebanks.bankscorpfinancial;
 
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -9,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -24,9 +26,27 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
     private DrawerLayout drawerLayout;
     private NavigationView navView;
+    private Toolbar toolbar;
+    private ActionBarDrawerToggle toggle;
 
     private Fragment fragment;
     FragmentManager fragmentManager;
+    FragmentTransaction ft;
+
+    Profile userProfile;
+
+    private DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            if (i == DialogInterface.BUTTON_POSITIVE) {
+                ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.flContent, new AccountOverviewFragment()).commit();
+                navView.setCheckedItem(R.id.nav_accounts);
+                setTitle("Accounts");
+                drawerLayout.closeDrawers();
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,10 +55,10 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
         drawerLayout = findViewById(R.id.drawer_layout);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        toggle = new ActionBarDrawerToggle(
                 this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
 
         drawerLayout.addDrawerListener(toggle);
@@ -49,9 +69,10 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
         setupHeader();
 
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.flContent, new DashboardFragment()).commit();
         navView.setCheckedItem(R.id.nav_dashboard);
+        setTitle("Dashboard");
     }
 
     private void setupHeader() {
@@ -65,7 +86,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         SharedPreferences userPreferences = this.getSharedPreferences("LastProfileUsed", MODE_PRIVATE);
         Gson gson = new Gson();
         String json = userPreferences.getString("LastProfileUsed", "");
-        Profile userProfile = gson.fromJson(json, Profile.class);
+        userProfile = gson.fromJson(json, Profile.class);
 
         //TODO: set the profile image
 
@@ -77,17 +98,40 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
+        drawerLayout = findViewById(R.id.drawer_layout);
+        fragmentManager = getSupportFragmentManager();
+
+        if (fragmentManager.getBackStackEntryCount() > 1) {
+            fragmentManager.popBackStack();
+        } else if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
     }
 
+    public void showDrawerButton() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        toggle.syncState();
+    }
+
+    private void displayDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Transfer Error")
+                .setMessage("You do not have another account to transfer to. If you would like to add another account, press 'OK'.")
+                .setNegativeButton("Cancel", dialogClickListener)
+                .setPositiveButton("OK", dialogClickListener);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        fragmentManager = getSupportFragmentManager();
 
         // Handle navigation view item clicks here.
         Class fragmentClass = null;
@@ -101,13 +145,18 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
                 fragmentClass = AccountOverviewFragment.class;
                 break;
             case R.id.nav_transfer:
-                title = "Transfer";
+                if (userProfile.getAccounts().size() < 2) {
+                    displayDialog();
+                } else {
+                    title = "Transfer";
+                    //TODO; Make Transfer fragment
+                }
                 break;
             case R.id.nav_payment:
                 title = "Payment";
                 break;
             case R.id.nav_settings:
-                //TODO:
+                //TODO: Make Settings fragment
                 break;
             case R.id.nav_logout:
                 finish();
@@ -118,19 +167,16 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         try  {
 
         fragment = (Fragment) fragmentClass.newInstance();
-
-        fragmentManager = getSupportFragmentManager();
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
         item.setChecked(true);
-
         setTitle(title);
-
         drawerLayout.closeDrawers();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-            return true;
+        return true;
     }
 }

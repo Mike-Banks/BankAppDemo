@@ -249,7 +249,7 @@ public class AccountActivity extends Activity {
         btnMakeDeposit.setVisibility(VISIBLE);
         edtDepositAmount.setVisibility(VISIBLE);
     }
-
+    //TODO: Make separate fragment for deposits
     /**
      * method used to make a deposit
      */
