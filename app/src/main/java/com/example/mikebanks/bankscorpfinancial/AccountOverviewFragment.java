@@ -37,7 +37,13 @@ public class AccountOverviewFragment extends Fragment {
     private Profile userProfile;
     private SharedPreferences userPreferences;
 
-    //TODO:
+    //TODO A: Change layout so that the listView takes up the whole page (maybe a message at the top telling user to select an account
+    //TODO B: Clicking on an account will automatically go to the details page
+    //TODO C1: Have the symbol (see BasicActivity example) to add an account (opens dialogue maybe, asks for name and initial deposit (maybe no initial deposit anymore?) - if user cancels or creates - toast is displayed
+    //TODO C2: Additionally, if user comes here from the transfer dialog (only one account), automatically open the dialog (or have the dialog appear in the drawerActivity)
+    //TODO D1: Add functionality to remove accounts (note: ensure i remove from database as well (restructure db when removed)
+    //TODO D2: Add functionality to remove payees and profiles as well
+    //TODO D3: Add swiping functionality so that the user can swipe on the account to remove or see details
 
     //KEEP ME
     private int selectedAccountIndex;
