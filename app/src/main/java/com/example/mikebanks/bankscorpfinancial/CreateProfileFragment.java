@@ -67,10 +67,11 @@ public class CreateProfileFragment extends Fragment {
 
         ApplicationDB applicationDb = new ApplicationDB( getActivity().getApplicationContext());
         ArrayList<Profile> profiles = applicationDb.getAllProfiles();
+        boolean usernameTaken = false;
 
         for (int iProfile = 0; iProfile < profiles.size(); iProfile++) {
-            if (edtUsername.getText().toString() == profiles.get(iProfile).getUsername()) {
-                Toast.makeText(getActivity(), "A User has already taken that username", Toast.LENGTH_SHORT).show();
+            if (edtUsername.getText().toString().equals(profiles.get(iProfile).getUsername())) {
+                usernameTaken = true;
             }
         }
 
@@ -82,7 +83,9 @@ public class CreateProfileFragment extends Fragment {
         else if (!(edtPassword.getText().toString().equals(edtPasswordConfirm.getText().toString()))) {
             Toast.makeText(getActivity(), R.string.password_mismatch, Toast.LENGTH_SHORT).show();
         }
-
+        else if (usernameTaken == true) {
+            Toast.makeText(getActivity(), "A User has already taken that username", Toast.LENGTH_SHORT).show();
+        }
         else {
             Profile userProfile = new Profile(edtFirstName.getText().toString(), edtLastName.getText().toString(), edtCountry.getText().toString(),
                     edtUsername.getText().toString(), edtPassword.getText().toString());
