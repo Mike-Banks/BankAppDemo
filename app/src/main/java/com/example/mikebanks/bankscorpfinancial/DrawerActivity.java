@@ -1,5 +1,6 @@
 package com.example.mikebanks.bankscorpfinancial;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,8 +17,10 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -105,7 +108,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_drawer);
+        setContentView(R.layout.drawer_layout);
 
         drawerLayout = findViewById(R.id.drawer_layout);
 
@@ -194,21 +197,37 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
     @Override
     public void onBackPressed() {
-        drawerLayout = findViewById(R.id.drawer_layout);
         fragmentManager = getSupportFragmentManager();
 
         if (fragmentManager.getBackStackEntryCount() > 1) {
             fragmentManager.popBackStack();
         } else if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
-        } else {
+        }
+        else {
             super.onBackPressed();
         }
     }
 
     public void showDrawerButton() {
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        toggle = new ActionBarDrawerToggle(
+                this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+
+        drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+        toggle.syncState();
+    }
+
+    public void showUpButton() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     private void displayTransferDialog() {
@@ -260,11 +279,11 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
     private void makeDeposit() {
 
         int selectedAccountIndex = spnAccounts.getSelectedItemPosition();
-        double depositAmount = Double.parseDouble(edtDepositAmount.getText().toString());
 
         if (edtDepositAmount.getText().toString().equals("")) {
             Toast.makeText(this, "Please enter an amount to deposit", Toast.LENGTH_SHORT).show();
         } else {
+            double depositAmount = Double.parseDouble(edtDepositAmount.getText().toString());
             if (depositAmount < 0.01) {
                 Toast.makeText(this, "please enter a valid amount", Toast.LENGTH_SHORT).show();
             } else {
@@ -274,7 +293,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
                 SharedPreferences.Editor prefsEditor = userPreferences.edit();
                 gson = new Gson();
                 json = gson.toJson(userProfile);
-                prefsEditor.putString("LastProfileUsed", json).commit();
+                prefsEditor.putString("LastProfileUsed", json).apply();
 
                 ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
                 applicationDb.overwriteAccount(userProfile, userProfile.getAccounts().get(selectedAccountIndex));
@@ -293,6 +312,28 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_about) {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -303,11 +344,6 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         Class fragmentClass = null;
         String title = item.getTitle().toString();
 
-        boolean dontChangeInstance = false;
-
-        //REMOVE ME EVENTUALLY
-        showDrawerButton(); //TODO: Won't need once i fix the back button in AccountFragment to not open the menu and actually go back
-
         switch(item.getItemId()) {
             case R.id.nav_dashboard:
                 fragmentClass = DashboardFragment.class;
@@ -317,7 +353,6 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
                 break;
             case R.id.nav_deposit:
                 if (userProfile.getAccounts().size() > 0) {
-                    dontChangeInstance = true;
                     displayDepositDialog();
                 } else {
                     //TODO: Display a NoAccounts message - or modify transferDialog to be general (just change the title from Transfer error to account error)
@@ -339,7 +374,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
                 break;
             case R.id.nav_logout:
                 Toast.makeText(this, "Logging out", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                Intent intent = new Intent(getApplicationContext(), LaunchActivity.class);
                 startActivity(intent);
                 finish();
                 break;
@@ -347,19 +382,16 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
                 fragmentClass = DashboardFragment.class;
         }
 
+        try {
+            fragment = (Fragment) fragmentClass.newInstance();
+            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
-        if (dontChangeInstance == false) {
-            try {
-                fragment = (Fragment) fragmentClass.newInstance();
-                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
+            item.setChecked(true);
+            setTitle(title);
+            drawerLayout.closeDrawers();
 
-                item.setChecked(true);
-                setTitle(title);
-                drawerLayout.closeDrawers();
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return true;

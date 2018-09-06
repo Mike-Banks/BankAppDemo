@@ -6,6 +6,7 @@
     <item name="colorPrimary">@color/colorPrimary</item>
     <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
     <item name="colorAccent">@color/colorAccent</item>
+    <item name="android:fontFamily">sans-serif</item>
 </style>
 
 <style name="AppTheme.NoActionBar">
@@ -17,6 +18,10 @@
 
 <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+<!-- apply to nav_view if wanting to change text appearance of items in the drawer menu:
+NOTE: text size of menu items is 14sp by default - the standard
+Using this style will not highlight the selected items in green (not sure how to change that, maybe its okay)
+-->
 <style name="MenuItems" parent="AppTheme">
     <item name="android:textSize">16sp</item>
     <item name="android:fontFamily">sans-serif</item>

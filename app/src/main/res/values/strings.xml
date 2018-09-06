@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BanksCorpFinancial</string>
+    <string name="app_name">Bank App Demo</string>
     <string name="incorrect_login">Incorrect Username or Password</string>
     <string name="account_success">Account Successfully Created</string>
     <string name="account_cancelled">Account Creation Cancelled</string>

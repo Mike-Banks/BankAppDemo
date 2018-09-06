@@ -80,39 +80,26 @@ public class AccountOverviewFragment extends Fragment {
         edtAccountAmount = rootView.findViewById(R.id.edt_initial_deposit);
         btnAddAccount = rootView.findViewById(R.id.btn_open_account);
 
+        ((DrawerActivity) getActivity()).showDrawerButton();
+
         setValues();
+
+        String s = edtAccountAmount.getText().toString(); //TODO: Why are these fields not being cleared?
 
         return rootView;
     }
 
-    @Override
-    public void onResume() {
-        resetFields();
-        ((DrawerActivity) getActivity()).showDrawerButton();
-        super.onResume();
-    }
-
-    /**
-     * method used to setup the values for the views and fields
-     */
-    private void resetFields() {
+    private void setValues() {
         selectedAccountIndex = 0;
         btnViewAccount.setEnabled(false);
 
         userPreferences = this.getActivity().getSharedPreferences("LastProfileUsed", MODE_PRIVATE);
-
         gson = new Gson();
         String json = userPreferences.getString("LastProfileUsed", "");
         userProfile = gson.fromJson(json, Profile.class);
 
         AccountAdapter adapter = new AccountAdapter(this.getActivity(), R.layout.lst_accounts, userProfile.getAccounts());
         lstAccounts.setAdapter(adapter);
-
-        edtAccountAmount.getText().clear();
-        edtAccountName.getText().clear();
-    }
-
-    private void setValues() {
 
         lstAccounts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -130,6 +117,9 @@ public class AccountOverviewFragment extends Fragment {
      * method used to view an account
      */
     private void viewAccount() {
+        //edtAccountAmount.getText().clear();
+        //edtAccountName.getText().clear();
+
         AccountFragment nextFragment = new AccountFragment();
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.flContent, nextFragment,"findThisFragment")

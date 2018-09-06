@@ -79,7 +79,7 @@ public class DashboardFragment extends Fragment {
      */
     private void setupViews() {
 
-        userPreferences = this.getActivity().getSharedPreferences("LastProfileUsed", MODE_PRIVATE);
+        userPreferences = getActivity().getSharedPreferences("LastProfileUsed", MODE_PRIVATE);
         gson = new Gson();
         json = userPreferences.getString("LastProfileUsed", "");
         userProfile = gson.fromJson(json, Profile.class);

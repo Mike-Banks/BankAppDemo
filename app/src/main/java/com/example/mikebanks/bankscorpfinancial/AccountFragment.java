@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -81,7 +82,6 @@ public class AccountFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        showBackButton();
         //TODO: Change the title to be: selectedAccount.toString(), OR, Keep as Accounts
         //TODO: Try and get more screen space for transactions
     }
@@ -110,14 +110,10 @@ public class AccountFragment extends Fragment {
         edtDepositAmount = rootView.findViewById(R.id.edt_deposit_amount);
         btnMakeDeposit = rootView.findViewById(R.id.btn_make_deposit);
 
+        ((DrawerActivity) getActivity()).showUpButton();
+
         setValues();
         return rootView;
-    }
-
-    public void showBackButton() {
-        if (getActivity() instanceof DrawerActivity) {
-            ((DrawerActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        }
     }
 
     /**
