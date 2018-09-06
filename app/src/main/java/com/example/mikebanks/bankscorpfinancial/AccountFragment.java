@@ -60,9 +60,6 @@ public class AccountFragment extends Fragment {
                 case R.id.btn_add_deposit:
                     showDepositViews();
                     break;
-                case R.id.btn_make_deposit:
-                    makeDeposit();
-                    break;
             }
         }
     };
@@ -269,45 +266,4 @@ public class AccountFragment extends Fragment {
         btnMakeDeposit.setVisibility(VISIBLE);
         edtDepositAmount.setVisibility(VISIBLE);
     }
-
-    //TODO: Make separate fragment for deposits
-    /**
-     * method used to make a deposit
-     */
-    private void makeDeposit() {
-
-        double depositAmount = Double.parseDouble(edtDepositAmount.getText().toString());
-
-        if (edtDepositAmount.getText().toString().equals("")) {
-            Toast.makeText(getActivity(), "Please enter an amount to deposit", Toast.LENGTH_SHORT).show();
-        } else {
-            if (depositAmount < 10) {
-                Toast.makeText(getActivity(), R.string.balance_less_than_ten, Toast.LENGTH_SHORT).show();
-            } else {
-
-                userProfile.getAccounts().get(selectedAccountIndex).setAccountBalance(userProfile.getAccounts().get(selectedAccountIndex).getAccountBalance() + depositAmount);
-
-                SharedPreferences.Editor prefsEditor = userPreferences.edit();
-                gson = new Gson();
-                json = gson.toJson(userProfile);
-                prefsEditor.putString("LastProfileUsed", json).commit();
-
-                ApplicationDB applicationDb = new ApplicationDB(getActivity().getApplicationContext());
-                applicationDb.overwriteAccount(userProfile, userProfile.getAccounts().get(selectedAccountIndex));
-
-                txtAccountBalance.setText("Balance: $" + String.format("%.2f",userProfile.getAccounts().get(selectedAccountIndex).getAccountBalance()));
-
-                Toast.makeText(getActivity(), "Deposit of $" + String.format("%.2f",depositAmount) + " " + "made successfully", Toast.LENGTH_SHORT).show();
-
-                btnAddDeposit.setVisibility(VISIBLE);
-                btnMakeDeposit.setVisibility(GONE);
-
-                edtDepositAmount.getText().clear();
-                edtDepositAmount.setVisibility(GONE);
-            }
-        }
-
-
-    }
-
 }

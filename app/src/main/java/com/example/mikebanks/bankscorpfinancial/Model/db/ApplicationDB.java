@@ -188,7 +188,6 @@ public class ApplicationDB {
         return payee;
     }
 
-    //TODO: Clear Transaction history?
     public Transaction saveNewTransaction(Profile profile, String accountNo, Transaction transaction) {
         database = openHelper.getWritableDatabase();
 
@@ -338,7 +337,7 @@ public class ApplicationDB {
                     String destinationAccount = cursor.getString(DESTINATION_ACCOUNT_COLUMN);
                     String payee = cursor.getString(TRANSACTION_PAYEE_COLUMN);
                     double amount = cursor.getDouble(TRANSACTION_AMOUNT_COLUMN);
-                    Transaction.TRANSACTION_TYPE transactionType = Transaction.TRANSACTION_TYPE.valueOf(cursor.getString(TRANSACTION_TYPE_COLUMN)); //TODO: May not work since trans type is an enum
+                    Transaction.TRANSACTION_TYPE transactionType = Transaction.TRANSACTION_TYPE.valueOf(cursor.getString(TRANSACTION_TYPE_COLUMN));
 
                     if (transactionType == Transaction.TRANSACTION_TYPE.PAYMENT) {
                         transactions.add(new Transaction(transactionID, payee, amount, id));

@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -35,9 +36,8 @@ public class DashboardFragment extends Fragment {
     private Gson gson;
     private Profile userProfile;
 
-    //TODO: Clicking on any account (the ListView in general - add clickListener to it?) will launch the Accounts Page
     //TODO: Add some kind of back navigation for fragments? - research - fragmentStack does not work here for some reason (unless fragment is launched from another fragment)
-    //TODO: Pressing back goes to main android screen, rather than login screen - don;t start Drawer Activity for result, start it, and finish login act - when logging out with button, finish the drawer activity (maybe), start Login activity - still somehow display logging out message in login activity
+    //TODO: Pressing back goes to main android screen, rather than login screen - don't start Drawer Activity for result, start it, and finish login act - when logging out with button, finish the drawer activity (maybe), start Login activity - still somehow display logging out message in login activity
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -74,47 +74,6 @@ public class DashboardFragment extends Fragment {
         super.onResume();
     }
 
-    private void loadPayees() {
-        ApplicationDB applicationDb = new ApplicationDB(getActivity().getApplicationContext());
-
-        ArrayList<Payee> payees = applicationDb.getPayeesFromCurrentProfile(userProfile.getDbId());
-
-        for (int i = 0; i < payees.size(); i++) {
-            userProfile.addPayee(payees.get(i).getPayeeName());
-        }
-    }
-
-    private void loadAccounts() {
-        ApplicationDB applicationDb = new ApplicationDB(getActivity().getApplicationContext());
-
-        ArrayList<Account> accounts = applicationDb.getAccountsFromCurrentProfile(userProfile.getDbId());
-
-        if (userProfile.getAccounts().size() == 0) {
-            for (int i = 0; i < accounts.size(); i++) {
-                userProfile.addAccount(accounts.get(i).getAccountName(), accounts.get(i).getAccountBalance());
-            }
-        }
-
-        AccountAdapter adapter = new AccountAdapter(this.getActivity(), R.layout.lst_accounts, accounts);
-        lstAccounts.setAdapter(adapter);
-    }
-
-    private void loadTransactions() {
-
-        ApplicationDB applicationDb = new ApplicationDB(getActivity().getApplicationContext());
-        ArrayList<Transaction> transactions;
-
-        for (int iAccount = 0; iAccount < userProfile.getAccounts().size(); iAccount++) {
-            transactions = applicationDb.getTransactionsFromCurrentAccount(userProfile.getDbId(), userProfile.getAccounts().get(iAccount).toTransactionString());
-            if (transactions.size() > 0 && userProfile.getAccounts().get(iAccount).getTransactions().size() == 0) {
-
-                for (int iTrans = 0; iTrans < transactions.size(); iTrans++) {
-                    userProfile.getAccounts().get(iAccount).addTransactionFromDB(transactions.get(iTrans));
-                }
-            }
-        }
-    }
-
     /**
      * method used to setup the values for the views and fields
      */
@@ -125,13 +84,12 @@ public class DashboardFragment extends Fragment {
         json = userPreferences.getString("LastProfileUsed", "");
         userProfile = gson.fromJson(json, Profile.class);
 
-        loadAccounts();
-        loadPayees();
-        loadTransactions();
-
-        SharedPreferences.Editor prefsEditor = userPreferences.edit();
-        json = gson.toJson(userProfile);
-        prefsEditor.putString("LastProfileUsed", json).commit();
+        lstAccounts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                ((DrawerActivity) getActivity()).manualNavigation(DrawerActivity.manualNavID.ACCOUNTS_ID);
+            }
+        });
 
         StringBuilder welcomeString = new StringBuilder();
 

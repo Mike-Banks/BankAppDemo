@@ -25,7 +25,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnCreateAccount;
 
     private static final int CREATE_ACCOUNT_ACTIVITY = 1;
-    private static final int BANKING_ACTIVITY = 2;
 
     private Profile lastProfileUsed;
     private Gson gson;
@@ -131,7 +130,8 @@ public class LoginActivity extends AppCompatActivity {
                     prefsEditor.putString("LastProfileUsed", json).commit();
 
                     intent = new Intent(getApplicationContext(), DrawerActivity.class);
-                    startActivityForResult(intent, BANKING_ACTIVITY);
+                    startActivity(intent);
+                    finish();
                 }
             }
             if (!match) {
@@ -174,13 +174,6 @@ public class LoginActivity extends AppCompatActivity {
             } else if (resultCode == RESULT_CANCELED) {
                 Toast.makeText(this, R.string.account_cancelled, Toast.LENGTH_SHORT).show();
 
-            }
-            //TODO: this will likely be removed, but if not, clean up this method (first check if result code is OK, then check is request code is either activity - less code, cleaner
-        } else if (requestCode == BANKING_ACTIVITY) {
-            if (resultCode == RESULT_OK) {
-                Toast.makeText(this, "Logging out", Toast.LENGTH_SHORT).show();
-            } else if (resultCode == RESULT_CANCELED) {
-                finish();
             }
         }
     }

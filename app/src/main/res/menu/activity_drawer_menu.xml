@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:itemTextAppearance="@style/MenuItems"
     tools:showIn="navigation_view">
-
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_dashboard"
@@ -12,21 +13,39 @@
             android:id="@+id/nav_accounts"
             android:icon="@drawable/icon_accounts_24"
             android:title="Accounts" />
-        <item
-            android:id="@+id/nav_transfer"
-            android:icon="@drawable/icon_transfer_24"
-            android:title="Make a Transfer" />
-        <item
-            android:id="@+id/nav_payment"
-            android:icon="@drawable/icon_payment_24"
-            android:title="Make a Payment" />
-        <item
-            android:id="@+id/nav_settings"
-            android:icon="@drawable/settings_icon_24"
-            android:title="Settings" />
-        <item
-            android:id="@+id/nav_logout"
-            android:icon="@drawable/icon_logout_24"
-            android:title="Logout" />
+
+        <item android:title="Transaction">
+            <menu>
+                <group android:checkableBehavior="single">
+                    <item
+                        android:id="@+id/nav_deposit"
+                        android:icon="@drawable/deposit_icon_24"
+                        android:title="Make a Deposit" />
+                    <item
+                        android:id="@+id/nav_transfer"
+                        android:icon="@drawable/icon_transfer_24"
+                        android:title="Make a Transfer" />
+                    <item
+                        android:id="@+id/nav_payment"
+                        android:icon="@drawable/icon_payment_24"
+                        android:title="Make a Payment" />
+                </group>
+            </menu>
+
+        </item>
+        <item android:title="Profile">
+            <menu>
+                <group android:checkableBehavior="single">
+                    <item
+                        android:id="@+id/nav_settings"
+                        android:icon="@drawable/settings_icon_24"
+                        android:title="Settings" />
+                    <item
+                        android:id="@+id/nav_logout"
+                        android:icon="@drawable/icon_logout_24"
+                        android:title="Logout" />
+                </group>
+            </menu>
+        </item>
     </group>
 </menu>
