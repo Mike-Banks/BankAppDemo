@@ -44,10 +44,6 @@ public class AccountFragment extends Fragment {
     private ListView lstPayments;
     private ListView lstTransfers;
 
-    private Button btnAddDeposit;
-    private EditText edtDepositAmount;
-    private Button btnMakeDeposit;
-
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -57,9 +53,6 @@ public class AccountFragment extends Fragment {
                     break;
                 case R.id.btn_transfers:
                     displayTransfers();
-                    break;
-                case R.id.btn_add_deposit:
-                    showDepositViews();
                     break;
             }
         }
@@ -106,10 +99,6 @@ public class AccountFragment extends Fragment {
         lstPayments = rootView.findViewById(R.id.lst_payments);
         lstTransfers = rootView.findViewById(R.id.lst_transfers);
 
-        btnAddDeposit = rootView.findViewById(R.id.btn_add_deposit);
-        edtDepositAmount = rootView.findViewById(R.id.edt_deposit_amount);
-        btnMakeDeposit = rootView.findViewById(R.id.btn_make_deposit);
-
         ((DrawerActivity) getActivity()).showUpButton();
 
         setValues();
@@ -128,13 +117,9 @@ public class AccountFragment extends Fragment {
 
         txtNoTransfersMsg.setVisibility(GONE);
         txtNoPaymentsMsg.setVisibility(GONE);
-        edtDepositAmount.setVisibility(GONE);
-        btnMakeDeposit.setVisibility(GONE);
 
         btnPayments.setOnClickListener(clickListener);
         btnTransfers.setOnClickListener(clickListener);
-        btnAddDeposit.setOnClickListener(clickListener);
-        btnMakeDeposit.setOnClickListener(clickListener);
 
         getTransactionTypes();
         checkTransactionHistory();
@@ -254,12 +239,4 @@ public class AccountFragment extends Fragment {
 
     }
 
-    /**
-     * method used to display the deposit views
-     */
-    private void showDepositViews() {
-        btnAddDeposit.setVisibility(GONE);
-        btnMakeDeposit.setVisibility(VISIBLE);
-        edtDepositAmount.setVisibility(VISIBLE);
-    }
 }

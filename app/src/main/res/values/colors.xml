@@ -2,7 +2,7 @@
 <resources>
     <color name="colorPrimary">#4a7023</color>
     <color name="colorPrimaryDark">#3B5323</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorAccent">#2f8b50</color>
     <color name="drawerHeader">#717171</color>
     <color name="drawerMenu">#e8e8e8</color>
 </resources>

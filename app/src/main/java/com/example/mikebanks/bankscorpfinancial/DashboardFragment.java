@@ -28,7 +28,6 @@ import static android.content.Context.MODE_PRIVATE;
 public class DashboardFragment extends Fragment {
 
     private TextView txtWelcome;
-    private ListView lstAccounts;
 
     private SharedPreferences userPreferences;
 
@@ -37,7 +36,6 @@ public class DashboardFragment extends Fragment {
     private Profile userProfile;
 
     //TODO: Add some kind of back navigation for fragments? - research - fragmentStack does not work here for some reason (unless fragment is launched from another fragment)
-    //TODO: Pressing back goes to main android screen, rather than login screen - don't start Drawer Activity for result, start it, and finish login act - when logging out with button, finish the drawer activity (maybe), start Login activity - still somehow display logging out message in login activity
 
     public DashboardFragment() {
         // Required empty public constructor
@@ -56,20 +54,17 @@ public class DashboardFragment extends Fragment {
         View rootView =  inflater.inflate(R.layout.fragment_dashboard, container, false);
 
         txtWelcome = rootView.findViewById(R.id.txt_welcome);
-        lstAccounts = rootView.findViewById(R.id.lst_accounts);
 
         setupViews();
         return rootView;
 
     }
 
+        //TODO: May not need this code
     @Override
     public void onResume() {
-        json = userPreferences.getString("LastProfileUsed", "");
-        userProfile = gson.fromJson(json, Profile.class);
-
-        AccountAdapter adapter = new AccountAdapter(this.getActivity(), R.layout.lst_accounts, userProfile.getAccounts());
-        lstAccounts.setAdapter(adapter);
+        //json = userPreferences.getString("LastProfileUsed", "");
+        //userProfile = gson.fromJson(json, Profile.class);
 
         super.onResume();
     }
@@ -83,13 +78,6 @@ public class DashboardFragment extends Fragment {
         gson = new Gson();
         json = userPreferences.getString("LastProfileUsed", "");
         userProfile = gson.fromJson(json, Profile.class);
-
-        lstAccounts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                ((DrawerActivity) getActivity()).manualNavigation(DrawerActivity.manualNavID.ACCOUNTS_ID);
-            }
-        });
 
         StringBuilder welcomeString = new StringBuilder();
 

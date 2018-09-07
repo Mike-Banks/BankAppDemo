@@ -1,7 +1,7 @@
 package com.example.mikebanks.bankscorpfinancial;
 
-import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -73,6 +73,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         public void onClick(View view) {
             if (view.getId() == btnCancel.getId()) {
                 depositDialog.dismiss();
+                manualNavigation(manualNavID.ACCOUNTS_ID);
                 Toast.makeText(DrawerActivity.this, "Deposit Cancelled", Toast.LENGTH_SHORT).show();
             } else if (view.getId() == btnDeposit.getId()) {
                 makeDeposit();
@@ -137,8 +138,34 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         json = gson.toJson(userProfile);
         prefsEditor.putString("LastProfileUsed", json).commit(); //TODO: this code only runs once - this activity is created once -
 
+        setupDrawerListener();
         setupHeader();
         manualNavigation(manualNavID.DASHBOARD_ID);
+    }
+
+    //TODO: Find different way to close keyboard when opening drawer or clean this up
+    private void setupDrawerListener() {
+        drawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(@NonNull View drawerView) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(@NonNull View drawerView) {
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+            }
+        });
     }
 
     private void setupHeader() {
@@ -241,13 +268,14 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
     private void displayDepositDialog() {
 
         depositDialog = new Dialog(this);
-        depositDialog.setContentView(R.layout.deposit_layout);
+        depositDialog.setContentView(R.layout.deposit_dialog);
         depositDialog.setTitle("Make a Deposit");
 
         depositDialog.setCanceledOnTouchOutside(true);
         depositDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialogInterface) {
+                manualNavigation(manualNavID.ACCOUNTS_ID);
                 Toast.makeText(DrawerActivity.this, "Deposit Cancelled", Toast.LENGTH_SHORT).show();
             }
         });
@@ -392,4 +420,6 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
         return true;
     }
+
+
 }
