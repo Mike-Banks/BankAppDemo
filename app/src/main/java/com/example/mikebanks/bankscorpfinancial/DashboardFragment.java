@@ -1,26 +1,17 @@
 package com.example.mikebanks.bankscorpfinancial;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.mikebanks.bankscorpfinancial.Adapters.AccountAdapter;
-import com.example.mikebanks.bankscorpfinancial.Model.Account;
-import com.example.mikebanks.bankscorpfinancial.Model.Payee;
 import com.example.mikebanks.bankscorpfinancial.Model.Profile;
-import com.example.mikebanks.bankscorpfinancial.Model.Transaction;
-import com.example.mikebanks.bankscorpfinancial.Model.db.ApplicationDB;
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -28,6 +19,8 @@ import static android.content.Context.MODE_PRIVATE;
 public class DashboardFragment extends Fragment {
 
     private TextView txtWelcome;
+    private TextView txtMessage;
+    private Button btnAddAccount;
 
     private SharedPreferences userPreferences;
 
@@ -54,6 +47,8 @@ public class DashboardFragment extends Fragment {
         View rootView =  inflater.inflate(R.layout.fragment_dashboard, container, false);
 
         txtWelcome = rootView.findViewById(R.id.txt_welcome);
+        txtMessage = rootView.findViewById(R.id.txt_details_msg);
+        btnAddAccount = rootView.findViewById(R.id.btn_add_account);
 
         setupViews();
         return rootView;
@@ -78,6 +73,23 @@ public class DashboardFragment extends Fragment {
         gson = new Gson();
         json = userPreferences.getString("LastProfileUsed", "");
         userProfile = gson.fromJson(json, Profile.class);
+
+        btnAddAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((DrawerActivity) getActivity()).manualNavigation(DrawerActivity.manualNavID.ACCOUNTS_ID);
+            }
+        });
+
+        if (userProfile.getAccounts().size() == 0) {
+            txtMessage.setVisibility(View.VISIBLE);
+            btnAddAccount.setVisibility(View.VISIBLE);
+            txtMessage.setText("You do not have any accounts, click below to add an account");
+        } else {
+            txtMessage.setVisibility(View.GONE);//TEMP to clear field
+            btnAddAccount.setVisibility(View.GONE);
+            //TODO: Have message say some kind of statistic about how many transactions they have made today
+        }
 
         StringBuilder welcomeString = new StringBuilder();
 

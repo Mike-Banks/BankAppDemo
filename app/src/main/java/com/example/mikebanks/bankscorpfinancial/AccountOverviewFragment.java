@@ -1,18 +1,21 @@
 package com.example.mikebanks.bankscorpfinancial;
 
-import android.content.Intent;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mikebanks.bankscorpfinancial.Adapters.AccountAdapter;
@@ -28,10 +31,32 @@ import static android.content.Context.MODE_PRIVATE;
 public class AccountOverviewFragment extends Fragment {
 
     private ListView lstAccounts;
+    private TextView txtTitleMessage;
+    private TextView txtDetailMessage;
+
+    private EditText edtAccountName;
+    private EditText edtInitAccountBalance;
+    private Button btnCancel;
+    private Button btnAddAccount;
 
     private Gson gson;
     private Profile userProfile;
     private SharedPreferences userPreferences;
+
+    private View.OnClickListener addAccountClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (view.getId() == btnCancel.getId()) {
+                accountDialog.dismiss();
+                Toast.makeText(getActivity(), "Account Creation Cancelled", Toast.LENGTH_SHORT).show();
+            } else if (view.getId() == btnAddAccount.getId()) {
+                addAccount();
+                accountDialog.dismiss();
+            }
+        }
+    };
+
+    private Dialog accountDialog;
 
     //TODO B: Clicking on an account will automatically go to the details page
     //TODO C1: Have Floating Action Button (research for Fragment) to add an account (opens dialogue maybe, asks for name and initial deposit (maybe no initial deposit anymore?) - if user cancels or creates - toast is displayed
@@ -58,13 +83,50 @@ public class AccountOverviewFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_account_overview, container, false);
 
+        FloatingActionButton fab = rootView.findViewById(R.id.floating_action_button);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                displayAccountDialog();
+            }
+        });
+
         lstAccounts = rootView.findViewById(R.id.lst_accounts);
+        txtTitleMessage = rootView.findViewById(R.id.txt_title_msg);
+        txtDetailMessage = rootView.findViewById(R.id.txt_details_msg);
 
         ((DrawerActivity) getActivity()).showDrawerButton();
 
         setValues();
 
         return rootView;
+    }
+
+    private void displayAccountDialog() {
+
+        accountDialog = new Dialog(this.getActivity());
+        accountDialog.setContentView(R.layout.account_dialog);
+        accountDialog.setTitle("Add Account"); //TODO: Check if titles work for regular dialog
+
+        accountDialog.setCanceledOnTouchOutside(true);
+        accountDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                Toast.makeText(getActivity(), "Account Creation Cancelled", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        edtAccountName = accountDialog.findViewById(R.id.edt_acc_name);
+        edtInitAccountBalance = accountDialog.findViewById(R.id.edt_init_bal); //TODO: Add initial balance to deposit transactions
+
+        btnCancel = accountDialog.findViewById(R.id.btn_cancel_dialog);
+        btnAddAccount = accountDialog.findViewById(R.id.btn_add_acc);
+
+        btnCancel.setOnClickListener(addAccountClickListener);
+        btnAddAccount.setOnClickListener(addAccountClickListener);
+
+        accountDialog.show();
+
     }
 
     private void setValues() {
@@ -75,6 +137,16 @@ public class AccountOverviewFragment extends Fragment {
         String json = userPreferences.getString("LastProfileUsed", "");
         userProfile = gson.fromJson(json, Profile.class);
 
+        //TODO: Add this code elsewhere and check when they remove accounts, if it is their last account. If it is, run this code
+        if (userProfile.getAccounts().size() == 0) {
+            txtTitleMessage.setText("Add an Account with the button below");
+            txtDetailMessage.setVisibility(View.GONE);
+            lstAccounts.setVisibility(View.GONE);
+        } else {
+            txtTitleMessage.setText("Select an Account to view Transactions");
+            txtDetailMessage.setVisibility(View.VISIBLE);
+            lstAccounts.setVisibility(View.VISIBLE);
+        }
         AccountAdapter adapter = new AccountAdapter(this.getActivity(), R.layout.lst_accounts, userProfile.getAccounts());
         lstAccounts.setAdapter(adapter);
 
@@ -105,14 +177,14 @@ public class AccountOverviewFragment extends Fragment {
     /**
      * method used to add an account
      */
-    /*
+
     private void addAccount() {
 
         int accountNum = userProfile.getAccounts().size();
 
-        if (!(edtAccountName.getText().toString().equals("") || edtAccountAmount.getText().toString().equals(""))) {
+        if (!(edtAccountName.getText().toString().equals("") || edtInitAccountBalance.getText().toString().equals(""))) {
 
-            if (Double.parseDouble(edtAccountAmount.getText().toString()) < 10) {
+            if (Double.parseDouble(edtInitAccountBalance.getText().toString()) < 10) {
                 Toast.makeText(this.getActivity(), R.string.balance_less_than_ten, Toast.LENGTH_SHORT).show();
             } else if (edtAccountName.getText().toString().length() > 10) {
 
@@ -134,23 +206,23 @@ public class AccountOverviewFragment extends Fragment {
 
                         ApplicationDB applicationDb = new ApplicationDB(getActivity().getApplicationContext());
 
-                        userProfile.addAccount(edtAccountName.getText().toString(), Double.parseDouble(edtAccountAmount.getText().toString()));
+                        userProfile.addAccount(edtAccountName.getText().toString(), Double.parseDouble(edtInitAccountBalance.getText().toString()));
 
                         applicationDb.saveNewAccount(userProfile, userProfile.getAccounts().get(accountNum));
 
-                        edtAccountName.setText("");
-                        edtAccountAmount.setText("");
+                        //edtAccountName.setText("");
+                        //edtAccountAmount.setText("");
 
                         Toast.makeText(this.getActivity(), R.string.acc_saved_successfully, Toast.LENGTH_SHORT).show();
 
                         ArrayList<Account> accounts = userProfile.getAccounts();
 
-                        AccountAdapter adapter = new AccountAdapter(this.getActivity(), R.layout.lst_accounts, accounts);
+                        AccountAdapter adapter = new AccountAdapter(getActivity(), R.layout.lst_accounts, accounts);
                         lstAccounts.setAdapter(adapter);
 
                         SharedPreferences.Editor prefsEditor = userPreferences.edit();
                         String json = gson.toJson(userProfile);
-                        prefsEditor.putString("LastProfileUsed", json).commit();
+                        prefsEditor.putString("LastProfileUsed", json).apply();
                     } else {
 
                         Toast.makeText(this.getActivity(), "You have reached the maximum amount of accounts (10)", Toast.LENGTH_SHORT).show();
@@ -164,5 +236,5 @@ public class AccountOverviewFragment extends Fragment {
             Toast.makeText(this.getActivity(), R.string.acc_fields_incomplete, Toast.LENGTH_SHORT).show();
         }
     }
-    */
+
 }

@@ -136,7 +136,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
         SharedPreferences.Editor prefsEditor = userPreferences.edit();
         json = gson.toJson(userProfile);
-        prefsEditor.putString("LastProfileUsed", json).commit(); //TODO: this code only runs once - this activity is created once -
+        prefsEditor.putString("LastProfileUsed", json).apply(); //TODO: this code only runs once - this activity is created once -
 
         setupDrawerListener();
         setupHeader();
@@ -253,13 +253,13 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         });
     }
 
-    private void displayTransferDialog() {
+    private void displayAccountAlertADialog(String option) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setTitle("Transfer Error")
-                .setMessage("You do not have another account to transfer to. If you would like to add another account, press 'OK'.")
+        builder.setTitle(String.format("%s Error", option))
+                .setMessage(String.format("You do not have enough accounts to make a %s. Add another account if you want to make a %s.", option, option.toLowerCase()))
                 .setNegativeButton("Cancel", dialogClickListener)
-                .setPositiveButton("OK", dialogClickListener);
+                .setPositiveButton("Add Account", dialogClickListener);
 
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -295,6 +295,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         btnDeposit.setOnClickListener(depositClickListener);
 
         depositDialog.show();
+
     }
 
     /**
@@ -309,7 +310,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         } else {
             double depositAmount = Double.parseDouble(edtDepositAmount.getText().toString());
             if (depositAmount < 0.01) {
-                Toast.makeText(this, "please enter a valid amount", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Please enter a valid amount", Toast.LENGTH_SHORT).show();
             } else {
 
                 userProfile.getAccounts().get(selectedAccountIndex).setAccountBalance(userProfile.getAccounts().get(selectedAccountIndex).getAccountBalance() + depositAmount);
@@ -379,18 +380,21 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
                 if (userProfile.getAccounts().size() > 0) {
                     displayDepositDialog();
                 } else {
-                    //TODO: Display a NoAccounts message - or modify transferDialog to be general (just change the title from Transfer error to account error)
+                    displayAccountAlertADialog("Deposit");
                 }
                 break;
             case R.id.nav_transfer:
                 if (userProfile.getAccounts().size() < 2) {
-                    displayTransferDialog();
+                    displayAccountAlertADialog("Transfer");
                 } else {
                     title = "Transfer";
                     //TODO: Make Transfer fragment
                 }
                 break;
             case R.id.nav_payment:
+                if (userProfile.getAccounts().size() < 1) {
+                    displayAccountAlertADialog("Payment");
+                }
                 title = "Payment";
                 break;
             case R.id.nav_settings:
