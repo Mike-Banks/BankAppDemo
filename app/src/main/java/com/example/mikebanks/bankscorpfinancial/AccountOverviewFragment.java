@@ -28,16 +28,11 @@ import static android.content.Context.MODE_PRIVATE;
 public class AccountOverviewFragment extends Fragment {
 
     private ListView lstAccounts;
-    private Button btnViewAccount;
-    private EditText edtAccountName;
-    private EditText edtAccountAmount;
-    private Button btnAddAccount;
 
     private Gson gson;
     private Profile userProfile;
     private SharedPreferences userPreferences;
 
-    //TODO A: Change layout so that the listView takes up the whole page (maybe a message at the top telling user to select an account
     //TODO B: Clicking on an account will automatically go to the details page
     //TODO C1: Have Floating Action Button (research for Fragment) to add an account (opens dialogue maybe, asks for name and initial deposit (maybe no initial deposit anymore?) - if user cancels or creates - toast is displayed
     //TODO C2: Additionally, if user comes here from the transfer dialog (only one account), automatically open the dialog (or have the dialog appear in the drawerActivity)
@@ -47,17 +42,6 @@ public class AccountOverviewFragment extends Fragment {
 
     //KEEP ME
     private int selectedAccountIndex;
-
-    private View.OnClickListener buttonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (view.getId() == btnViewAccount.getId()) {
-                viewAccount();
-            } else if (view.getId() == btnAddAccount.getId()) {
-                addAccount();
-            }
-        }
-    };
 
     public AccountOverviewFragment() {
         // Required empty public constructor
@@ -75,23 +59,16 @@ public class AccountOverviewFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_account_overview, container, false);
 
         lstAccounts = rootView.findViewById(R.id.lst_accounts);
-        btnViewAccount = rootView.findViewById(R.id.btn_view_account);
-        edtAccountName = rootView.findViewById(R.id.edt_account_name);
-        edtAccountAmount = rootView.findViewById(R.id.edt_initial_deposit);
-        btnAddAccount = rootView.findViewById(R.id.btn_open_account);
 
         ((DrawerActivity) getActivity()).showDrawerButton();
 
         setValues();
-
-        String s = edtAccountAmount.getText().toString(); //TODO: Why are these fields not being cleared?
 
         return rootView;
     }
 
     private void setValues() {
         selectedAccountIndex = 0;
-        btnViewAccount.setEnabled(false);
 
         userPreferences = this.getActivity().getSharedPreferences("LastProfileUsed", MODE_PRIVATE);
         gson = new Gson();
@@ -104,22 +81,16 @@ public class AccountOverviewFragment extends Fragment {
         lstAccounts.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                btnViewAccount.setEnabled(true);
                 selectedAccountIndex = i;
+                viewAccount();
             }
         });
-
-        btnViewAccount.setOnClickListener(buttonClickListener);
-        btnAddAccount.setOnClickListener(buttonClickListener);
     }
 
     /**
      * method used to view an account
      */
     private void viewAccount() {
-        //edtAccountAmount.getText().clear();
-        //edtAccountName.getText().clear();
-
         AccountFragment nextFragment = new AccountFragment();
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.flContent, nextFragment,"findThisFragment")
@@ -129,9 +100,12 @@ public class AccountOverviewFragment extends Fragment {
         //TODO: Pass the selectedAccountIndex to the AccountFragment - research passing data between fragments
     }
 
+    //TODO: Floating Action Button to open dialog (probably) can use this logic below
+
     /**
      * method used to add an account
      */
+    /*
     private void addAccount() {
 
         int accountNum = userProfile.getAccounts().size();
@@ -190,4 +164,5 @@ public class AccountOverviewFragment extends Fragment {
             Toast.makeText(this.getActivity(), R.string.acc_fields_incomplete, Toast.LENGTH_SHORT).show();
         }
     }
+    */
 }
