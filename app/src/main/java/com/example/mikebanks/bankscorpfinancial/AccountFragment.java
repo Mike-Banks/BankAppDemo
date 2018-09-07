@@ -125,9 +125,9 @@ public class AccountFragment extends Fragment {
         checkTransactionHistory();
         setupAdapters();
 
-        txtAccountName.setText("Name:" + " " + userProfile.getAccounts().get(selectedAccountIndex).getAccountName());
-        txtAccountNo.setText("No:" + " " + userProfile.getAccounts().get(selectedAccountIndex).getAccountNo());
-        txtAccountBalance.setText("Balance: $" + String.format("%.2f",userProfile.getAccounts().get(selectedAccountIndex).getAccountBalance()));
+        txtAccountName.setText("Account Name:" + " " + userProfile.getAccounts().get(selectedAccountIndex).getAccountName());
+        txtAccountNo.setText("Account No:" + " " + userProfile.getAccounts().get(selectedAccountIndex).getAccountNo());
+        txtAccountBalance.setText("Account Balance: $" + String.format("%.2f",userProfile.getAccounts().get(selectedAccountIndex).getAccountBalance()));
     }
 
     /**

@@ -60,7 +60,7 @@ public class DashboardFragment extends Fragment {
 
     }
 
-        //TODO: May not need this code
+        //TODO: May not need this code - test by adding an account then returning to this fragment and see if the message goes away
     @Override
     public void onResume() {
         //json = userPreferences.getString("LastProfileUsed", "");

@@ -10,13 +10,13 @@
         android:id="@+id/txt_account_name"
         android:layout_width="wrap_content"
         android:layout_height="22dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:textAppearance="@android:style/TextAppearance.Holo.Medium"
         android:textColor="@android:color/holo_green_dark"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_account_no"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="ACCOUNT NAME" />
 
     <TextView
@@ -24,11 +24,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:textAppearance="@android:style/TextAppearance.Holo.Medium"
         android:textColor="@android:color/holo_green_dark"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_account_name"
         tools:text="ACCOUNT NO" />
 
     <TextView
@@ -36,11 +37,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:textAllCaps="false"
         android:textAppearance="@android:style/TextAppearance.Holo.Medium"
         android:textColor="@android:color/holo_green_dark"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/txt_account_no"
+        app:layout_constraintTop_toBottomOf="@+id/txt_account_name"
         tools:text="ACCOUNT BALANCE" />
 
     <TextView
@@ -55,7 +60,7 @@
         android:textColor="@android:color/holo_green_dark"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_account_name" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_account_no" />
 
     <TextView
         android:id="@+id/txt_transactions_msg"
