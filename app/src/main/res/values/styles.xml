@@ -11,9 +11,11 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <!-- TODO: Translucent makes status bar darker, research how to fix -->
+    <!-- TODO: Translucent makes status bar darker, research how to fix - windowTranslucentStatus causes bug where keyboard views
+    won't resize with keyboard <item name="android:windowTranslucentStatus">true</item> put me in the style below-->
+
     <style name="DrawerOverlapStatusBarTheme" parent="AppTheme">
-        <item name="android:windowTranslucentStatus">true</item>
+
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

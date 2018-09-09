@@ -20,6 +20,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -305,35 +306,39 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
         int selectedAccountIndex = spnAccounts.getSelectedItemPosition();
 
-        if (edtDepositAmount.getText().toString().equals("")) {
-            Toast.makeText(this, "Please enter an amount to deposit", Toast.LENGTH_SHORT).show();
+        double depositAmount = 0;
+        boolean isNum = false;
+
+        try {
+            depositAmount = Double.parseDouble(edtDepositAmount.getText().toString());
+            isNum = true;
+        } catch (Exception e) {
+        }
+
+        if (depositAmount < 0.01 && isNum == false) {
+            Toast.makeText(this, "Please enter a valid amount", Toast.LENGTH_SHORT).show();
         } else {
-            double depositAmount = Double.parseDouble(edtDepositAmount.getText().toString());
-            if (depositAmount < 0.01) {
-                Toast.makeText(this, "Please enter a valid amount", Toast.LENGTH_SHORT).show();
-            } else {
 
-                userProfile.getAccounts().get(selectedAccountIndex).setAccountBalance(userProfile.getAccounts().get(selectedAccountIndex).getAccountBalance() + depositAmount);
+            userProfile.getAccounts().get(selectedAccountIndex).setAccountBalance(userProfile.getAccounts().get(selectedAccountIndex).getAccountBalance() + depositAmount);
 
-                SharedPreferences.Editor prefsEditor = userPreferences.edit();
-                gson = new Gson();
-                json = gson.toJson(userProfile);
-                prefsEditor.putString("LastProfileUsed", json).apply();
+            SharedPreferences.Editor prefsEditor = userPreferences.edit();
+            gson = new Gson();
+            json = gson.toJson(userProfile);
+            prefsEditor.putString("LastProfileUsed", json).apply();
 
-                ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
-                applicationDb.overwriteAccount(userProfile, userProfile.getAccounts().get(selectedAccountIndex));
+            ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
+            applicationDb.overwriteAccount(userProfile, userProfile.getAccounts().get(selectedAccountIndex));
 
-                Toast.makeText(this, "Deposit of $" + String.format("%.2f",depositAmount) + " " + "made successfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Deposit of $" + String.format("%.2f",depositAmount) + " " + "made successfully", Toast.LENGTH_SHORT).show();
 
-                accountAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, userProfile.getAccounts());
-                accountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                spnAccounts.setAdapter(accountAdapter);
+            accountAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, userProfile.getAccounts());
+            accountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spnAccounts.setAdapter(accountAdapter);
 
-                //TODO: Add checkbox if they want to make more than one deposit
-                depositDialog.dismiss();
-                drawerLayout.closeDrawers();
-                manualNavigation(manualNavID.ACCOUNTS_ID);
-            }
+            //TODO: Add checkbox if they want to make more than one deposit
+            depositDialog.dismiss();
+            drawerLayout.closeDrawers();
+            manualNavigation(manualNavID.ACCOUNTS_ID);
         }
     }
 

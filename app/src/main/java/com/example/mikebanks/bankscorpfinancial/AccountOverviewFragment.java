@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -58,8 +59,6 @@ public class AccountOverviewFragment extends Fragment {
 
     private Dialog accountDialog;
 
-    //TODO B: Clicking on an account will automatically go to the details page
-    //TODO C1: Have Floating Action Button (research for Fragment) to add an account (opens dialogue maybe, asks for name and initial deposit (maybe no initial deposit anymore?) - if user cancels or creates - toast is displayed
     //TODO C2: Additionally, if user comes here from the transfer dialog (only one account), automatically open the dialog (or have the dialog appear in the drawerActivity)
     //TODO D1: Add functionality to remove accounts (note: ensure i remove from database as well (restructure db when removed)
     //TODO D2: Add functionality to remove payees and profiles as well
@@ -108,11 +107,13 @@ public class AccountOverviewFragment extends Fragment {
         accountDialog.setContentView(R.layout.account_dialog);
         accountDialog.setTitle("Add Account"); //TODO: Check if titles work for regular dialog
 
+        accountDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
         accountDialog.setCanceledOnTouchOutside(true);
         accountDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialogInterface) {
-                Toast.makeText(getActivity(), "Account Creation Cancelled", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Account Creation Cancelled", Toast.LENGTH_SHORT).show();
             }
         });
 
