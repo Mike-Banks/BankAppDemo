@@ -404,7 +404,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
                     displayAccountAlertADialog("Transfer");
                 } else {
                     title = "Transfer";
-                    //TODO: Make Transfer fragment
+                    fragmentClass = TransferFragment.class;
                 }
                 break;
             case R.id.nav_payment:
