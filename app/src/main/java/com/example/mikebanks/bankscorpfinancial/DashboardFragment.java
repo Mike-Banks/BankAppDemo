@@ -66,7 +66,9 @@ public class DashboardFragment extends Fragment {
         btnAddAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ((DrawerActivity) getActivity()).manualNavigation(DrawerActivity.manualNavID.ACCOUNTS_ID);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("DisplayAccountDialog", true);
+                ((DrawerActivity) getActivity()).manualNavigation(DrawerActivity.manualNavID.ACCOUNTS_ID, bundle);
             }
         });
 

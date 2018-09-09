@@ -74,7 +74,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         public void onClick(View view) {
             if (view.getId() == btnCancel.getId()) {
                 depositDialog.dismiss();
-                manualNavigation(manualNavID.ACCOUNTS_ID);
+                manualNavigation(manualNavID.ACCOUNTS_ID, null);
                 Toast.makeText(DrawerActivity.this, "Deposit Cancelled", Toast.LENGTH_SHORT).show();
             } else if (view.getId() == btnDeposit.getId()) {
                 makeDeposit();
@@ -86,12 +86,14 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
             if (i == DialogInterface.BUTTON_POSITIVE) {
-                manualNavigation(manualNavID.ACCOUNTS_ID);
+                Bundle bundle = new Bundle();
+                bundle.putBoolean("DisplayAccountDialog", true);
+                manualNavigation(manualNavID.ACCOUNTS_ID, bundle);
             }
         }
     };
 
-    public void manualNavigation(manualNavID id) {
+    public void manualNavigation(manualNavID id, Bundle bundle) {
         ft = getSupportFragmentManager().beginTransaction();
 
         if (id == manualNavID.DASHBOARD_ID) {
@@ -99,7 +101,11 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
             navView.setCheckedItem(R.id.nav_dashboard);
             setTitle("Dashboard");
         } else if (id == manualNavID.ACCOUNTS_ID) {
-            ft.replace(R.id.flContent, new AccountOverviewFragment()).commit();
+            AccountOverviewFragment accountOverviewFragment = new AccountOverviewFragment();
+            if (bundle != null) {
+                accountOverviewFragment.setArguments(bundle);
+            }
+            ft.replace(R.id.flContent, accountOverviewFragment).commit();
             navView.setCheckedItem(R.id.nav_accounts);
             setTitle("Accounts");
         }
@@ -141,7 +147,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
         setupDrawerListener();
         setupHeader();
-        manualNavigation(manualNavID.DASHBOARD_ID);
+        manualNavigation(manualNavID.DASHBOARD_ID, null);
     }
 
     //TODO: Find different way to close keyboard when opening drawer or clean this up
@@ -276,7 +282,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         depositDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialogInterface) {
-                manualNavigation(manualNavID.ACCOUNTS_ID);
+                manualNavigation(manualNavID.ACCOUNTS_ID, null);
                 Toast.makeText(DrawerActivity.this, "Deposit Cancelled", Toast.LENGTH_SHORT).show();
             }
         });
@@ -338,7 +344,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
             //TODO: Add checkbox if they want to make more than one deposit
             depositDialog.dismiss();
             drawerLayout.closeDrawers();
-            manualNavigation(manualNavID.ACCOUNTS_ID);
+            manualNavigation(manualNavID.ACCOUNTS_ID, null);
         }
     }
 

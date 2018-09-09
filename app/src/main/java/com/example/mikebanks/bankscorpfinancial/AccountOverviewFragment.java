@@ -29,6 +29,9 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class AccountOverviewFragment extends Fragment {
 
+    private boolean displayAccountDialogOnLaunch;
+
+    FloatingActionButton fab;
     private ListView lstAccounts;
     private TextView txtTitleMessage;
     private TextView txtDetailMessage;
@@ -50,14 +53,12 @@ public class AccountOverviewFragment extends Fragment {
                 Toast.makeText(getActivity(), "Account Creation Cancelled", Toast.LENGTH_SHORT).show();
             } else if (view.getId() == btnAddAccount.getId()) {
                 addAccount();
-                accountDialog.dismiss();
             }
         }
     };
 
     private Dialog accountDialog;
 
-    //TODO C2: Additionally, if user comes here from the transfer dialog (only one account), automatically open the dialog (or have the dialog appear in the drawerActivity)
     //TODO D1: Add functionality to remove accounts (note: ensure i remove from database as well (restructure db when removed)
     //TODO D2: Add functionality to remove payees and profiles as well
     //TODO D3: Add swiping functionality so that the user can swipe on the account to remove or see details
@@ -72,6 +73,12 @@ public class AccountOverviewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = this.getArguments();
+
+        displayAccountDialogOnLaunch = false;
+        if (bundle != null) {
+            displayAccountDialogOnLaunch = bundle.getBoolean("DisplayAccountDialog", false);
+        }
     }
 
     @Override
@@ -80,13 +87,7 @@ public class AccountOverviewFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_account_overview, container, false);
 
-        FloatingActionButton fab = rootView.findViewById(R.id.floating_action_button);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                displayAccountDialog();
-            }
-        });
+        fab = rootView.findViewById(R.id.floating_action_button);
 
         lstAccounts = rootView.findViewById(R.id.lst_accounts);
         txtTitleMessage = rootView.findViewById(R.id.txt_title_msg);
@@ -96,6 +97,9 @@ public class AccountOverviewFragment extends Fragment {
 
         setValues();
 
+        if (displayAccountDialogOnLaunch) {
+            displayAccountDialog();
+        }
         return rootView;
     }
 
@@ -136,6 +140,17 @@ public class AccountOverviewFragment extends Fragment {
         String json = userPreferences.getString("LastProfileUsed", "");
         userProfile = gson.fromJson(json, Profile.class);
 
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (userProfile.getAccounts().size() >= 10) {
+                    Toast.makeText(getActivity(), "You have reached the maximum amount of accounts (10)", Toast.LENGTH_SHORT).show();
+                } else {
+                    displayAccountDialog();
+                }
+            }
+        });
+
         //TODO: Add this code elsewhere and check when they remove accounts, if it is their last account. If it is, run this code
         if (userProfile.getAccounts().size() == 0) {
             txtTitleMessage.setText("Add an Account with the button below");
@@ -146,6 +161,7 @@ public class AccountOverviewFragment extends Fragment {
             txtDetailMessage.setVisibility(View.VISIBLE);
             lstAccounts.setVisibility(View.VISIBLE);
         }
+
         AccountAdapter adapter = new AccountAdapter(this.getActivity(), R.layout.lst_accounts, userProfile.getAccounts());
         lstAccounts.setAdapter(adapter);
 
@@ -172,8 +188,6 @@ public class AccountOverviewFragment extends Fragment {
                 .replace(R.id.flContent, transactionsFragment,"findThisFragment")
                 .addToBackStack(null)
                 .commit();
-
-        //TODO: Pass the selectedAccountIndex to the TransactionFragment - research passing data between fragments
     }
 
     /**
@@ -181,17 +195,24 @@ public class AccountOverviewFragment extends Fragment {
      */
     private void addAccount() {
 
-        int accountNum = userProfile.getAccounts().size();
+        String balance = edtInitAccountBalance.getText().toString();
+        boolean isNum = false;
+        double depositAmount = 0;
 
-        if (!(edtAccountName.getText().toString().equals("") || edtInitAccountBalance.getText().toString().equals(""))) {
+        if (!(edtAccountName.getText().toString().equals(""))) {
 
-            if (Double.parseDouble(edtInitAccountBalance.getText().toString()) < 10) {
-                Toast.makeText(this.getActivity(), R.string.balance_less_than_ten, Toast.LENGTH_SHORT).show();
-            } else if (edtAccountName.getText().toString().length() > 10) {
+            try {
+                depositAmount = Double.parseDouble(edtInitAccountBalance.getText().toString());
+                isNum = true;
+            } catch (Exception e) {
+                Toast.makeText(getActivity(), "Please enter a valid amount", Toast.LENGTH_SHORT).show();
+            }
+
+            if (edtAccountName.getText().toString().length() > 10) {
 
                 Toast.makeText(this.getActivity(), R.string.account_name_exceeds_char, Toast.LENGTH_SHORT).show();
 
-            } else {
+            } else if ((isNum) || balance.equals("")) {
 
                 boolean match = false;
 
@@ -203,43 +224,39 @@ public class AccountOverviewFragment extends Fragment {
 
                 if (!match) {
 
-                    if (accountNum < 10) {
+                    ApplicationDB applicationDb = new ApplicationDB(getActivity().getApplicationContext());
 
-                        ApplicationDB applicationDb = new ApplicationDB(getActivity().getApplicationContext());
+                    userProfile.addAccount(edtAccountName.getText().toString(), Double.parseDouble(edtInitAccountBalance.getText().toString()));
 
-                        userProfile.addAccount(edtAccountName.getText().toString(), Double.parseDouble(edtInitAccountBalance.getText().toString()));
+                    applicationDb.saveNewAccount(userProfile, userProfile.getAccounts().get(userProfile.getAccounts().size()-1));
 
-                        applicationDb.saveNewAccount(userProfile, userProfile.getAccounts().get(accountNum));
+                    //edtAccountName.setText("");
+                    //edtAccountAmount.setText("");
 
-                        //edtAccountName.setText("");
-                        //edtAccountAmount.setText("");
+                    Toast.makeText(this.getActivity(), R.string.acc_saved_successfully, Toast.LENGTH_SHORT).show();
 
-                        Toast.makeText(this.getActivity(), R.string.acc_saved_successfully, Toast.LENGTH_SHORT).show();
-
-                        if (userProfile.getAccounts().size() == 1) {
-                            txtTitleMessage.setText("Select an Account to view Transactions");
-                            txtDetailMessage.setVisibility(View.VISIBLE);
-                            lstAccounts.setVisibility(View.VISIBLE);
-                        }
-                        ArrayList<Account> accounts = userProfile.getAccounts();
-
-                        AccountAdapter adapter = new AccountAdapter(getActivity(), R.layout.lst_accounts, accounts);
-                        lstAccounts.setAdapter(adapter);
-
-                        SharedPreferences.Editor prefsEditor = userPreferences.edit();
-                        String json = gson.toJson(userProfile);
-                        prefsEditor.putString("LastProfileUsed", json).apply();
-                    } else {
-
-                        Toast.makeText(this.getActivity(), "You have reached the maximum amount of accounts (10)", Toast.LENGTH_SHORT).show();
+                    if (userProfile.getAccounts().size() == 1) {
+                        txtTitleMessage.setText("Select an Account to view Transactions");
+                        txtDetailMessage.setVisibility(View.VISIBLE);
+                        lstAccounts.setVisibility(View.VISIBLE);
                     }
+                    ArrayList<Account> accounts = userProfile.getAccounts();
+
+                    AccountAdapter adapter = new AccountAdapter(getActivity(), R.layout.lst_accounts, accounts);
+                    lstAccounts.setAdapter(adapter);
+
+                    SharedPreferences.Editor prefsEditor = userPreferences.edit();
+                    String json = gson.toJson(userProfile);
+                    prefsEditor.putString("LastProfileUsed", json).apply();
+
+                    accountDialog.dismiss();
 
                 } else {
                     Toast.makeText(this.getActivity(), R.string.account_name_error, Toast.LENGTH_SHORT).show();
                 }
             }
         } else {
-            Toast.makeText(this.getActivity(), R.string.acc_fields_incomplete, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "Please enter an account name", Toast.LENGTH_SHORT).show();
         }
     }
 
