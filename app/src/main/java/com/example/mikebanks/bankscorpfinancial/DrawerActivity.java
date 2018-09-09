@@ -137,7 +137,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
         SharedPreferences.Editor prefsEditor = userPreferences.edit();
         json = gson.toJson(userProfile);
-        prefsEditor.putString("LastProfileUsed", json).apply(); //TODO: this code only runs once - this activity is created once -
+        prefsEditor.putString("LastProfileUsed", json).apply();
 
         setupDrawerListener();
         setupHeader();
@@ -367,6 +367,11 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        userPreferences = this.getSharedPreferences("LastProfileUsed", MODE_PRIVATE);
+        gson = new Gson();
+        json = userPreferences.getString("LastProfileUsed", "");
+        userProfile = gson.fromJson(json, Profile.class);
 
         fragmentManager = getSupportFragmentManager();
 

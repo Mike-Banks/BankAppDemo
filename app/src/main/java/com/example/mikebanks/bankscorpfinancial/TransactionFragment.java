@@ -27,9 +27,8 @@ import static android.content.Context.MODE_PRIVATE;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-public class AccountFragment extends Fragment {
+public class TransactionFragment extends Fragment {
 
-    //TODO: Have the up button return to the previous activity, rather than open the drawer menu
     private TextView txtAccountName;
     private TextView txtAccountNo;
     private TextView txtAccountBalance;
@@ -68,14 +67,18 @@ public class AccountFragment extends Fragment {
     private boolean containsTransfers;
     private boolean containsPayments;
 
-    public AccountFragment() {
+    public TransactionFragment() {
         // Required empty public constructor
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //TODO: Change the title to be: selectedAccount.toString(), OR, Keep as Accounts
+        Bundle bundle = this.getArguments();
+
+        getActivity().setTitle("Transactions");
+        selectedAccountIndex = bundle.getInt("SelectedAccount", 0);
+
         //TODO: Try and get more screen space for transactions
     }
 

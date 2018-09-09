@@ -5,14 +5,12 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -105,7 +103,7 @@ public class AccountOverviewFragment extends Fragment {
 
         accountDialog = new Dialog(this.getActivity());
         accountDialog.setContentView(R.layout.account_dialog);
-        accountDialog.setTitle("Add Account"); //TODO: Check if titles work for regular dialog
+
 
         accountDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
@@ -164,21 +162,23 @@ public class AccountOverviewFragment extends Fragment {
      * method used to view an account
      */
     private void viewAccount() {
-        AccountFragment nextFragment = new AccountFragment();
+        TransactionFragment transactionsFragment = new TransactionFragment();
+        Bundle bundle = new Bundle();
+        bundle.putInt("SelectedAccount", selectedAccountIndex);
+
+        transactionsFragment.setArguments(bundle);
+
         getActivity().getSupportFragmentManager().beginTransaction()
-                .replace(R.id.flContent, nextFragment,"findThisFragment")
+                .replace(R.id.flContent, transactionsFragment,"findThisFragment")
                 .addToBackStack(null)
                 .commit();
 
-        //TODO: Pass the selectedAccountIndex to the AccountFragment - research passing data between fragments
+        //TODO: Pass the selectedAccountIndex to the TransactionFragment - research passing data between fragments
     }
-
-    //TODO: Floating Action Button to open dialog (probably) can use this logic below
 
     /**
      * method used to add an account
      */
-
     private void addAccount() {
 
         int accountNum = userProfile.getAccounts().size();
@@ -216,6 +216,11 @@ public class AccountOverviewFragment extends Fragment {
 
                         Toast.makeText(this.getActivity(), R.string.acc_saved_successfully, Toast.LENGTH_SHORT).show();
 
+                        if (userProfile.getAccounts().size() == 1) {
+                            txtTitleMessage.setText("Select an Account to view Transactions");
+                            txtDetailMessage.setVisibility(View.VISIBLE);
+                            lstAccounts.setVisibility(View.VISIBLE);
+                        }
                         ArrayList<Account> accounts = userProfile.getAccounts();
 
                         AccountAdapter adapter = new AccountAdapter(getActivity(), R.layout.lst_accounts, accounts);

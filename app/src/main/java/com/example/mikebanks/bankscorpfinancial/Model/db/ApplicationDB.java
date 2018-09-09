@@ -150,6 +150,7 @@ public class ApplicationDB {
         database.update(PROFILES_TABLE, cv, PROFILE_ID + "=?", new String[] {String.valueOf(profile.getDbId())});
         database.close();
     }
+
     public Profile saveNewProfile(Profile profile) {
 
         database = openHelper.getWritableDatabase();

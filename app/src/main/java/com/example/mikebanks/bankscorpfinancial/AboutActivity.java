@@ -32,8 +32,6 @@ import java.util.Scanner;
 
 public class AboutActivity extends Activity {
 
-    //TODO: Can be changed to save all the transactions as well - save statement to device?
-
     private Button btnSaveProfile;
     private Button btnGotoPortfolio;
 

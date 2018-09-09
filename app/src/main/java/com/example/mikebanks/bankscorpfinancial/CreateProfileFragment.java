@@ -59,7 +59,6 @@ public class CreateProfileFragment extends Fragment {
         return rootView;
     }
 
-    //TODO: Stop user from creating another profile with the same username - load profiles from DB, loop through them to compare
     /**
      * method used to create an account
      */
@@ -92,11 +91,12 @@ public class CreateProfileFragment extends Fragment {
 
             applicationDb.saveNewProfile(userProfile);
 
-            //TODO: Pass bundle back to LaunchActivity, to then pass to LoginFragment
-            ((LaunchActivity) getActivity()).profileCreated();
+            Bundle bundle = new Bundle();
+            bundle.putString("Username", userProfile.getUsername());
+            bundle.putString("Password", userProfile.getPassword());
 
-            //intent.putExtra("Username", userProfile.getUsername());
-            //intent.putExtra("Password", userProfile.getPassword());
+            ((LaunchActivity) getActivity()).profileCreated(bundle);
+
         }
     }
 }

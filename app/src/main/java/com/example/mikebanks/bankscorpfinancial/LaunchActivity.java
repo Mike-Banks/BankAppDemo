@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -86,16 +87,14 @@ public class LaunchActivity extends AppCompatActivity {
         finish();
     }
 
-    public void profileCreated() {
+    public void profileCreated(Bundle bundle) {
 
         Toast.makeText(this, R.string.account_success, Toast.LENGTH_SHORT).show();
 
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.login_frm_content, new LoginFragment()).commit();
+        LoginFragment loginFragment = new LoginFragment();
+        loginFragment.setArguments(bundle);
 
-        //TODO: Pass bundle to login fragment with the username and password just used to create profile
-        //edtUsername.setText(data.getStringExtra("Username"));
-        //edtPassword.setText(data.getStringExtra("Password"));
-        //chkRememberCred.setChecked(true);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.login_frm_content, loginFragment).commit();
     }
 }

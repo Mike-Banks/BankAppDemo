@@ -21,14 +21,9 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class LoginFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private Bundle bundle;
+    private String username;
+    private String password;
 
     private EditText edtUsername;
     private EditText edtPassword;
@@ -57,23 +52,14 @@ public class LoginFragment extends Fragment {
         // Required empty public constructor
     }
 
-    // TODO: Constructor for creating the LoginFragment after creating a profile
-    public static LoginFragment newInstance(String param1, String param2) {
-        LoginFragment fragment = new LoginFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        bundle = this.getArguments();
+        if (bundle != null) {
+            username = bundle.getString("Username", "");
+            password = bundle.getString("Password", "");
         }
     }
 
@@ -93,6 +79,13 @@ public class LoginFragment extends Fragment {
         ((LaunchActivity) getActivity()).removeUpButton();
 
         setupViews();
+
+        if (bundle != null) {
+            edtUsername.setText(username);
+            edtPassword.setText(password);
+            chkRememberCred.setChecked(true);
+        }
+
         return rootView;
     }
 
@@ -104,7 +97,7 @@ public class LoginFragment extends Fragment {
         btnLogin.setOnClickListener(clickListener);
         btnCreateAccount.setOnClickListener(clickListener);
 
-        userPreferences = getActivity().getSharedPreferences("LastProfileUsed", MODE_PRIVATE); //TODO: may return null
+        userPreferences = getActivity().getSharedPreferences("LastProfileUsed", MODE_PRIVATE);
 
         chkRememberCred.setChecked(userPreferences.getBoolean("rememberMe", false));
         if (chkRememberCred.isChecked()) {
@@ -116,8 +109,9 @@ public class LoginFragment extends Fragment {
             edtUsername.setText(lastProfileUsed.getUsername());
             edtPassword.setText(lastProfileUsed.getPassword());
 
-            //login();                                        //----- NOTE: This automatically logs in for the user
-            //finish();                                       //----- NOTE: This ensures the user cannot return to the login screen by pressing the back button (we want this)
+            //Automatic login for user
+            //login();
+            //finish();
         }
 
     }

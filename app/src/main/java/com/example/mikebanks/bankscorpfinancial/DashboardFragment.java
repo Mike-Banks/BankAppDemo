@@ -28,8 +28,6 @@ public class DashboardFragment extends Fragment {
     private Gson gson;
     private Profile userProfile;
 
-    //TODO: Add some kind of back navigation for fragments? - research - fragmentStack does not work here for some reason (unless fragment is launched from another fragment)
-
     public DashboardFragment() {
         // Required empty public constructor
     }
@@ -53,15 +51,6 @@ public class DashboardFragment extends Fragment {
         setupViews();
         return rootView;
 
-    }
-
-        //TODO: May not need this code - test by adding an account then returning to this fragment and see if the message goes away
-    @Override
-    public void onResume() {
-        //json = userPreferences.getString("LastProfileUsed", "");
-        //userProfile = gson.fromJson(json, Profile.class);
-
-        super.onResume();
     }
 
     /**

@@ -72,7 +72,7 @@ public class Profile {
      * @param accountBalance
      */
     public void addAccount(String accountName, double accountBalance) {
-        String accno = "A" + (accounts.size() + 1); //TODO: Make AccNo, ProfileID and TransID's more sophisticated- ie. add the profile id to account no, add the account no and profile id to trans id, etc
+        String accno = "A" + (accounts.size() + 1);
         Account account = new Account(accountName, accno, accountBalance);
         accounts.add(account);
     }
