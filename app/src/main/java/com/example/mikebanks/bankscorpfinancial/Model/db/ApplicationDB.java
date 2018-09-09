@@ -74,6 +74,7 @@ public class ApplicationDB {
     private static final String TRANSACTIONS_TABLE = "Transactions";
 
     private static final String TRANSACTION_ID = "_TransactionID";
+    private static final String TIMESTAMP = "Timestamp";
     private static final String SENDING_ACCOUNT = "SendingAccount";
     private static final String DESTINATION_ACCOUNT = "DestinationAccount";
     private static final String TRANSACTION_PAYEE = "Payee";
@@ -81,11 +82,12 @@ public class ApplicationDB {
     private static final String TRANS_TYPE = "Type";
 
     private static final int TRANSACTION_ID_COLUMN = 2;
-    private static final int SENDING_ACCOUNT_COLUMN = 3;
-    private static final int DESTINATION_ACCOUNT_COLUMN = 4;
-    private static final int TRANSACTION_PAYEE_COLUMN = 5;
-    private static final int TRANSACTION_AMOUNT_COLUMN = 6;
-    private static final int TRANSACTION_TYPE_COLUMN = 7;
+    private static final int TIMESTAMP_COLUMN = 3;
+    private static final int SENDING_ACCOUNT_COLUMN = 4;
+    private static final int DESTINATION_ACCOUNT_COLUMN = 5;
+    private static final int TRANSACTION_PAYEE_COLUMN = 6;
+    private static final int TRANSACTION_AMOUNT_COLUMN = 7;
+    private static final int TRANSACTION_TYPE_COLUMN = 8;
     //------------------------------------------------------------------- TRANSACTION TABLE ----------------------- \\
 
     private static final String CREATE_PROFILES_TABLE =
@@ -119,6 +121,7 @@ public class ApplicationDB {
                     PROFILE_ID + " INTEGER NOT NULL, " +
                     ACCOUNT_NO + " TEXT NOT NULL, " +
                     TRANSACTION_ID + " TEXT NOT NULL, " +
+                    TIMESTAMP + " TEXT, " +
                     SENDING_ACCOUNT + " TEXT, " +
                     DESTINATION_ACCOUNT + " TEXT, " +
                     TRANSACTION_PAYEE + " TEXT, " +
@@ -189,13 +192,14 @@ public class ApplicationDB {
         return payee;
     }
 
-    public Transaction saveNewTransaction(Profile profile, String accountNo, Transaction transaction) {
+    public void saveNewTransaction(Profile profile, String accountNo, Transaction transaction) {
         database = openHelper.getWritableDatabase();
 
         ContentValues cv = new ContentValues();
         cv.put(PROFILE_ID, profile.getDbId());
         cv.put(ACCOUNT_NO, accountNo);
         cv.put(TRANSACTION_ID, transaction.getTransactionID());
+        cv.put(TIMESTAMP, transaction.getTimestamp());
 
         if (transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.TRANSFER) {
             cv.put(SENDING_ACCOUNT, transaction.getSendingAccount());
@@ -215,8 +219,6 @@ public class ApplicationDB {
         transaction.setDbId(id);
 
         database.close();
-
-        return transaction;
     }
 
     //TODO: Remove an account?
@@ -334,6 +336,7 @@ public class ApplicationDB {
                 long id = cursor.getLong(PROFILE_ID_COLUMN);
                 if (accountNo.equals(cursor.getString(ACCOUNT_NO_COLUMN))) {
                     String transactionID = cursor.getString(TRANSACTION_ID_COLUMN);
+                    String timestamp = cursor.getString(TIMESTAMP_COLUMN);
                     String sendingAccount = cursor.getString(SENDING_ACCOUNT_COLUMN);
                     String destinationAccount = cursor.getString(DESTINATION_ACCOUNT_COLUMN);
                     String payee = cursor.getString(TRANSACTION_PAYEE_COLUMN);
@@ -341,9 +344,9 @@ public class ApplicationDB {
                     Transaction.TRANSACTION_TYPE transactionType = Transaction.TRANSACTION_TYPE.valueOf(cursor.getString(TRANSACTION_TYPE_COLUMN));
 
                     if (transactionType == Transaction.TRANSACTION_TYPE.PAYMENT) {
-                        transactions.add(new Transaction(transactionID, payee, amount, id));
+                        transactions.add(new Transaction(transactionID, timestamp, payee, amount, id));
                     } else if (transactionType == Transaction.TRANSACTION_TYPE.TRANSFER) {
-                        transactions.add(new Transaction(transactionID, sendingAccount, destinationAccount, amount, id));
+                        transactions.add(new Transaction(transactionID, timestamp, sendingAccount, destinationAccount, amount, id));
                     }
                 }
 
