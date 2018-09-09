@@ -93,6 +93,7 @@ public class AccountOverviewFragment extends Fragment {
         txtTitleMessage = rootView.findViewById(R.id.txt_title_msg);
         txtDetailMessage = rootView.findViewById(R.id.txt_details_msg);
 
+        getActivity().setTitle("Accounts");
         ((DrawerActivity) getActivity()).showDrawerButton();
 
         setValues();
@@ -197,15 +198,16 @@ public class AccountOverviewFragment extends Fragment {
 
         String balance = edtInitAccountBalance.getText().toString();
         boolean isNum = false;
-        double depositAmount = 0;
 
         if (!(edtAccountName.getText().toString().equals(""))) {
 
             try {
-                depositAmount = Double.parseDouble(edtInitAccountBalance.getText().toString());
+                Double.parseDouble(edtInitAccountBalance.getText().toString());
                 isNum = true;
             } catch (Exception e) {
-                Toast.makeText(getActivity(), "Please enter a valid amount", Toast.LENGTH_SHORT).show();
+                if (!edtInitAccountBalance.getText().toString().equals("")) {
+                    Toast.makeText(getActivity(), "Please enter a valid amount", Toast.LENGTH_SHORT).show();
+                }
             }
 
             if (edtAccountName.getText().toString().length() > 10) {
@@ -226,12 +228,13 @@ public class AccountOverviewFragment extends Fragment {
 
                     ApplicationDB applicationDb = new ApplicationDB(getActivity().getApplicationContext());
 
-                    userProfile.addAccount(edtAccountName.getText().toString(), Double.parseDouble(edtInitAccountBalance.getText().toString()));
+                    if (balance.equals("")) {
+                        userProfile.addAccount(edtAccountName.getText().toString(), 0);
+                    } else {
+                        userProfile.addAccount(edtAccountName.getText().toString(), Double.parseDouble(edtInitAccountBalance.getText().toString()));
+                    }
 
                     applicationDb.saveNewAccount(userProfile, userProfile.getAccounts().get(userProfile.getAccounts().size()-1));
-
-                    //edtAccountName.setText("");
-                    //edtAccountAmount.setText("");
 
                     Toast.makeText(this.getActivity(), R.string.acc_saved_successfully, Toast.LENGTH_SHORT).show();
 
