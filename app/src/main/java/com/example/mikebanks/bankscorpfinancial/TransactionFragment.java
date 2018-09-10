@@ -1,24 +1,20 @@
 package com.example.mikebanks.bankscorpfinancial;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.mikebanks.bankscorpfinancial.Adapters.DepositAdapter;
 import com.example.mikebanks.bankscorpfinancial.Adapters.PaymentAdapter;
 import com.example.mikebanks.bankscorpfinancial.Adapters.TransferAdapter;
 import com.example.mikebanks.bankscorpfinancial.Model.Profile;
 import com.example.mikebanks.bankscorpfinancial.Model.Transaction;
-import com.example.mikebanks.bankscorpfinancial.Model.db.ApplicationDB;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -36,12 +32,15 @@ public class TransactionFragment extends Fragment {
 
     private Button btnPayments;
     private Button btnTransfers;
+    private Button btnDeposits;
 
     private TextView txtNoTransfersMsg;
     private TextView txtNoPaymentsMsg;
+    private TextView txtNoDepositMsg;
 
     private ListView lstPayments;
     private ListView lstTransfers;
+    private ListView lstDeposits;
 
     private View.OnClickListener clickListener = new View.OnClickListener() {
         @Override
@@ -53,6 +52,8 @@ public class TransactionFragment extends Fragment {
                 case R.id.btn_transfers:
                     displayTransfers();
                     break;
+                case R.id.btn_deposits:
+                    displayDeposits();
             }
         }
     };
@@ -62,10 +63,11 @@ public class TransactionFragment extends Fragment {
     private SharedPreferences userPreferences;
     private Profile userProfile;
 
-    //KEEP ME
     private int selectedAccountIndex;
+
     private boolean containsTransfers;
     private boolean containsPayments;
+    private boolean containsDeposits;
 
     public TransactionFragment() {
         // Required empty public constructor
@@ -86,7 +88,7 @@ public class TransactionFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_account, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_transaction, container, false);
 
         txtAccountName = rootView.findViewById(R.id.txt_account_name);
         txtAccountNo = rootView.findViewById(R.id.txt_account_no);
@@ -95,12 +97,15 @@ public class TransactionFragment extends Fragment {
 
         btnPayments = rootView.findViewById(R.id.btn_payments);
         btnTransfers = rootView.findViewById(R.id.btn_transfers);
+        btnDeposits = rootView.findViewById(R.id.btn_deposits);
 
         txtNoPaymentsMsg = rootView.findViewById(R.id.txt_no_payments_msg);
         txtNoTransfersMsg = rootView.findViewById(R.id.txt_no_transfers_msg);
+        txtNoDepositMsg = rootView.findViewById(R.id.txt_no_deposits_msg);
 
         lstPayments = rootView.findViewById(R.id.lst_payments);
         lstTransfers = rootView.findViewById(R.id.lst_transfers);
+        lstDeposits = rootView.findViewById(R.id.lst_deposits);
 
         ((DrawerActivity) getActivity()).showUpButton();
 
@@ -120,9 +125,11 @@ public class TransactionFragment extends Fragment {
 
         txtNoTransfersMsg.setVisibility(GONE);
         txtNoPaymentsMsg.setVisibility(GONE);
+        txtNoDepositMsg.setVisibility(GONE);
 
         btnPayments.setOnClickListener(clickListener);
         btnTransfers.setOnClickListener(clickListener);
+        btnDeposits.setOnClickListener(clickListener);
 
         getTransactionTypes();
         checkTransactionHistory();
@@ -140,8 +147,10 @@ public class TransactionFragment extends Fragment {
         for (int i = 0; i < userProfile.getAccounts().get(selectedAccountIndex).getTransactions().size(); i++) {
             if (userProfile.getAccounts().get(selectedAccountIndex).getTransactions().get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.TRANSFER) {
                 containsTransfers = true;
-            } else {
+            } else if (userProfile.getAccounts().get(selectedAccountIndex).getTransactions().get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.PAYMENT) {
                 containsPayments = true;
+            } else {
+                containsDeposits = true;
             }
         }
     }
@@ -156,15 +165,23 @@ public class TransactionFragment extends Fragment {
 
             btnPayments.setVisibility(VISIBLE);
             btnTransfers.setVisibility(VISIBLE);
+            btnDeposits.setVisibility(VISIBLE);
 
             if (containsPayments) {
                 btnPayments.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
                 lstTransfers.setVisibility(GONE);
                 lstPayments.setVisibility(VISIBLE);
-            } else {
+                lstDeposits.setVisibility(GONE);
+            } else if (containsTransfers){
                 btnTransfers.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
                 lstTransfers.setVisibility(VISIBLE);
                 lstPayments.setVisibility(GONE);
+                lstDeposits.setVisibility(GONE);
+            } else {
+                btnDeposits.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+                lstDeposits.setVisibility(VISIBLE);
+                lstPayments.setVisibility(GONE);
+                lstTransfers.setVisibility(GONE);
             }
 
         } else {
@@ -173,10 +190,15 @@ public class TransactionFragment extends Fragment {
 
             btnPayments.setVisibility(GONE);
             btnTransfers.setVisibility(GONE);
+            btnDeposits.setVisibility(GONE);
+
             txtNoTransfersMsg.setVisibility(GONE);
             txtNoPaymentsMsg.setVisibility(GONE);
+            txtNoDepositMsg.setVisibility(GONE);
+
             lstPayments.setVisibility(GONE);
             lstTransfers.setVisibility(GONE);
+            lstDeposits.setVisibility(GONE);
         }
     }
 
@@ -189,12 +211,15 @@ public class TransactionFragment extends Fragment {
         ArrayList<Transaction> transactions = userProfile.getAccounts().get(selectedAccountIndex).getTransactions();
         ArrayList<Transaction> transfers = new ArrayList<>();
         ArrayList<Transaction> payments = new ArrayList<>();
+        ArrayList<Transaction> deposits = new ArrayList<>();
 
         for (int i = 0; i < transactions.size(); i++) {
             if (transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.TRANSFER) {
                 transfers.add(transactions.get(i));
-            } else {
+            } else if (transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.PAYMENT){
                 payments.add(transactions.get(i));
+            } else {
+                deposits.add(transactions.get(i));
             }
         }
 
@@ -203,16 +228,25 @@ public class TransactionFragment extends Fragment {
 
         PaymentAdapter paymentAdapter = new PaymentAdapter(getActivity(), R.layout.lst_payments, payments);
         lstPayments.setAdapter(paymentAdapter);
+
+        DepositAdapter depositAdapter = new DepositAdapter(getActivity(), R.layout.lst_deposits, deposits);
+        lstDeposits.setAdapter(depositAdapter);
     }
 
     /**
      * method used to display the payments
      */
     private void displayPayments() {
+
         lstTransfers.setVisibility(GONE);
+        lstDeposits.setVisibility(GONE);
+
         txtNoTransfersMsg.setVisibility(GONE);
+        txtNoDepositMsg.setVisibility(GONE);
+
         btnPayments.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
         btnTransfers.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+        btnDeposits.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
 
         if (containsPayments) {
             txtNoPaymentsMsg.setVisibility(GONE);
@@ -227,10 +261,16 @@ public class TransactionFragment extends Fragment {
      * method used to display the transfers
      */
     private void displayTransfers() {
+
         lstPayments.setVisibility(GONE);
+        lstDeposits.setVisibility(GONE);
+
         txtNoPaymentsMsg.setVisibility(GONE);
+        txtNoDepositMsg.setVisibility(GONE);
+
         btnPayments.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
         btnTransfers.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+        btnDeposits.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
 
         if (containsTransfers) {
             txtNoTransfersMsg.setVisibility(GONE);
@@ -238,6 +278,27 @@ public class TransactionFragment extends Fragment {
         } else {
             txtNoTransfersMsg.setVisibility(VISIBLE);
             lstTransfers.setVisibility(GONE);
+        }
+
+    }
+
+    private void displayDeposits() {
+        lstTransfers.setVisibility(GONE);
+        lstPayments.setVisibility(GONE);
+
+        txtNoPaymentsMsg.setVisibility(GONE);
+        txtNoTransfersMsg.setVisibility(GONE);
+
+        btnPayments.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+        btnTransfers.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
+        btnDeposits.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
+
+        if (containsDeposits) {
+            txtNoDepositMsg.setVisibility(GONE);
+            lstDeposits.setVisibility(VISIBLE);
+        } else {
+            txtNoDepositMsg.setVisibility(VISIBLE);
+            lstDeposits.setVisibility(GONE);
         }
 
     }

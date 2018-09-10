@@ -36,7 +36,7 @@ public class Transaction {
      */
     public Transaction (String transactionID, String payee, double amount) {
         this.transactionID = transactionID;
-        this.timestamp = DATE_FORMAT.format(new Date());
+        timestamp = DATE_FORMAT.format(new Date());
         this.payee = payee;
         this.amount = amount;
         transactionType = TRANSACTION_TYPE.PAYMENT;
@@ -44,6 +44,19 @@ public class Transaction {
 
     public Transaction (String transactionID, String timestamp, String payee, double amount, long dbId) {
         this(transactionID, payee, amount);
+        this.timestamp = timestamp;
+        this.dbId = dbId;
+    }
+
+    public Transaction(String transactionID, double amount) {
+        this.transactionID = transactionID;
+        timestamp = DATE_FORMAT.format(new Date());
+        this.amount = amount;
+        transactionType = TRANSACTION_TYPE.DEPOSIT;
+    }
+
+    public Transaction(String transactionID, String timestamp, double amount, long dbId) {
+        this(transactionID, amount);
         this.timestamp = timestamp;
         this.dbId = dbId;
     }

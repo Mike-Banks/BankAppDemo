@@ -228,10 +228,11 @@ public class AccountOverviewFragment extends Fragment {
 
                     ApplicationDB applicationDb = new ApplicationDB(getActivity().getApplicationContext());
 
-                    if (balance.equals("")) {
-                        userProfile.addAccount(edtAccountName.getText().toString(), 0);
-                    } else {
-                        userProfile.addAccount(edtAccountName.getText().toString(), Double.parseDouble(edtInitAccountBalance.getText().toString()));
+                    userProfile.addAccount(edtAccountName.getText().toString(), 0);
+
+                    if (!balance.equals("")) {
+                        userProfile.getAccounts().get(userProfile.getAccounts().size()-1).addDepositTransaction(Double.parseDouble(edtInitAccountBalance.getText().toString()));
+
                     }
 
                     applicationDb.saveNewAccount(userProfile, userProfile.getAccounts().get(userProfile.getAccounts().size()-1));

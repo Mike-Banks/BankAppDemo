@@ -102,8 +102,22 @@
         android:background="@android:color/darker_gray"
         android:text="@string/transfers"
         android:textColor="@android:color/black"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btn_deposits"
         app:layout_constraintStart_toEndOf="@+id/btn_payments"
+        app:layout_constraintTop_toBottomOf="@+id/txt_transactions_title" />
+
+    <Button
+        android:id="@+id/btn_deposits"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        android:background="@android:color/darker_gray"
+        android:text="Deposits"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btn_transfers"
         app:layout_constraintTop_toBottomOf="@+id/txt_transactions_title" />
 
     <ListView
@@ -114,24 +128,43 @@
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_payments" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_transfers" />
 
     <ListView
         android:id="@+id/lst_transfers"
         android:layout_width="0dp"
-        android:layout_height="224dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="20dp"
         android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_transactions_title" />
+        app:layout_constraintTop_toBottomOf="@+id/btn_transfers" />
+
+    <ListView
+        android:id="@+id/lst_deposits"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_transfers"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/txt_no_payments_msg"
@@ -146,7 +179,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_payments" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_no_deposits_msg" />
 
     <TextView
         android:id="@+id/txt_no_transfers_msg"
@@ -161,6 +194,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_payments" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_no_deposits_msg" />
+
+    <TextView
+        android:id="@+id/txt_no_deposits_msg"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:text="You have not made any deposits with this account yet"
+        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_transfers" />
 
 </android.support.constraint.ConstraintLayout>

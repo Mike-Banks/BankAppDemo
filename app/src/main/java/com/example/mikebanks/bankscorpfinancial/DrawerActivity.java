@@ -325,7 +325,8 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
             Toast.makeText(this, "Please enter a valid amount", Toast.LENGTH_SHORT).show();
         } else {
 
-            userProfile.getAccounts().get(selectedAccountIndex).setAccountBalance(userProfile.getAccounts().get(selectedAccountIndex).getAccountBalance() + depositAmount);
+            Account account = userProfile.getAccounts().get(selectedAccountIndex);
+            account.addDepositTransaction(depositAmount);
 
             SharedPreferences.Editor prefsEditor = userPreferences.edit();
             gson = new Gson();
@@ -333,7 +334,9 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
             prefsEditor.putString("LastProfileUsed", json).apply();
 
             ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
-            applicationDb.overwriteAccount(userProfile, userProfile.getAccounts().get(selectedAccountIndex));
+            applicationDb.overwriteAccount(userProfile, account);
+            applicationDb.saveNewTransaction(userProfile, account.getAccountNo(),
+                    account.getTransactions().get(account.getTransactions().size()-1));
 
             Toast.makeText(this, "Deposit of $" + String.format("%.2f",depositAmount) + " " + "made successfully", Toast.LENGTH_SHORT).show();
 
@@ -341,7 +344,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
             accountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spnAccounts.setAdapter(accountAdapter);
 
-            //TODO: Add checkbox if they want to make more than one deposit
+            //TODO: Add checkbox if the user wants to make more than one deposit
             depositDialog.dismiss();
             drawerLayout.closeDrawers();
             manualNavigation(manualNavID.ACCOUNTS_ID, null);

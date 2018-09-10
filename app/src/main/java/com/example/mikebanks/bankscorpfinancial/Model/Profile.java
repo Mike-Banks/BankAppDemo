@@ -77,6 +77,19 @@ public class Profile {
         accounts.add(account);
     }
 
+    public void addTransferTransaction(int sendingAccIndex, int recievingAccIndex, double transferAmount) {
+        Account sendingAccount = getAccounts().get(sendingAccIndex);
+        Account receivingAccount = getAccounts().get(recievingAccIndex);
+
+        sendingAccount.setAccountBalance(sendingAccount.getAccountBalance() - transferAmount);
+        receivingAccount.setAccountBalance(receivingAccount.getAccountBalance() + transferAmount);
+
+        Transaction transfer = new Transaction("T-T" + getAccounts().size()+1, sendingAccount.toTransactionString(),
+                receivingAccount.toTransactionString(), transferAmount);
+
+        sendingAccount.getTransactions().add(transfer);
+        receivingAccount.getTransactions().add(transfer);
+    }
     /**
      * method used to add a payee to the profile
      * @param payeeName

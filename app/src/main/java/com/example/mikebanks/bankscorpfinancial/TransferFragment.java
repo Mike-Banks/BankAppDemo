@@ -128,19 +128,12 @@ public class TransferFragment extends Fragment {
 
                 int sendingAccIndex = spnSendingAccount.getSelectedItemPosition();
 
-                Account sendingAcc = (Account) spnSendingAccount.getSelectedItem();
-                Account receivingAcc = (Account) spnReceivingAccount.getSelectedItem();
-
                 Double transferAmount = Double.parseDouble(edtTransferAmount.getText().toString());
 
-                sendingAcc.setAccountBalance(sendingAcc.getAccountBalance() - transferAmount);
-                receivingAcc.setAccountBalance(receivingAcc.getAccountBalance() + transferAmount);
+                userProfile.addTransferTransaction(sendingAccIndex, receivingAccIndex, transferAmount);
 
-                String sendingAccString = sendingAcc.toTransactionString();
-                String receivingAccString = receivingAcc.toTransactionString();
-
-                sendingAcc.addTransferTransaction(sendingAccString, receivingAccString, transferAmount);
-                receivingAcc.addTransferTransaction(sendingAccString, receivingAccString, transferAmount);
+                Account sendingAccount = (Account) spnSendingAccount.getItemAtPosition(sendingAccIndex);
+                Account receivingAccount = (Account) spnReceivingAccount.getItemAtPosition(receivingAccIndex);
 
                 spnSendingAccount.setAdapter(accountAdapter);
                 spnReceivingAccount.setAdapter(accountAdapter);
@@ -149,8 +142,10 @@ public class TransferFragment extends Fragment {
                 spnReceivingAccount.setSelection(receivingAccIndex);
 
                 ApplicationDB applicationDb = new ApplicationDB(getActivity().getApplicationContext());
-                applicationDb.saveNewTransaction(userProfile, sendingAccString, sendingAcc.getTransactions().get(sendingAcc.getTransactions().size()-1));
-                applicationDb.saveNewTransaction(userProfile, receivingAccString, receivingAcc.getTransactions().get(receivingAcc.getTransactions().size()-1));
+                applicationDb.saveNewTransaction(userProfile, sendingAccount.getAccountNo(),
+                        sendingAccount.getTransactions().get(sendingAccount.getTransactions().size()-1));
+                applicationDb.saveNewTransaction(userProfile, receivingAccount.getAccountNo(),
+                        receivingAccount.getTransactions().get(receivingAccount.getTransactions().size()-1));
 
                 SharedPreferences.Editor prefsEditor = userPreferences.edit();
                 json = gson.toJson(userProfile);

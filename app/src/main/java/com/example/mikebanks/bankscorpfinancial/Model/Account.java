@@ -73,15 +73,11 @@ public class Account {
         transactions.add(payment);
     }
 
-    /**
-     * method used to add a transfer
-     * @param sendingAccount
-     * @param destinationAccount
-     * @param amount
-     */
-    public void addTransferTransaction(String sendingAccount, String destinationAccount, double amount) {
-        Transaction transfer = new Transaction("T-T" + (transactions.size() + 1), sendingAccount, destinationAccount, amount);
-        transactions.add(transfer);
+    public void addDepositTransaction(double amount) {
+        accountBalance += amount;
+        //TODO: Loop through transactions, find how many deposits there are: Trans ID: T1-D1 (# of trans - # of deposits)
+        Transaction deposit = new Transaction("D-T" + (transactions.size() + 1), amount);
+        transactions.add(deposit);
     }
 
     /**

@@ -209,6 +209,10 @@ public class ApplicationDB {
             cv.putNull(SENDING_ACCOUNT);
             cv.putNull(DESTINATION_ACCOUNT);
             cv.put(TRANSACTION_PAYEE, transaction.getPayee());
+        } else if (transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.DEPOSIT) {
+            cv.putNull(SENDING_ACCOUNT);
+            cv.putNull(DESTINATION_ACCOUNT);
+            cv.putNull(TRANSACTION_PAYEE);
         }
 
         cv.put(TRANSACTION_AMOUNT, transaction.getAmount());
@@ -347,6 +351,8 @@ public class ApplicationDB {
                         transactions.add(new Transaction(transactionID, timestamp, payee, amount, id));
                     } else if (transactionType == Transaction.TRANSACTION_TYPE.TRANSFER) {
                         transactions.add(new Transaction(transactionID, timestamp, sendingAccount, destinationAccount, amount, id));
+                    } else if (transactionType == Transaction.TRANSACTION_TYPE.DEPOSIT) {
+                        transactions.add(new Transaction(transactionID, timestamp, amount, id));
                     }
                 }
 
