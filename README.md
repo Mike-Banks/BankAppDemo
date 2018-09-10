@@ -4,7 +4,7 @@ The project is currently being overhauled to have a DrawerLayout as the main men
 
 # BANK APP DEMO
 
-A Banking app made for Android using Android Studio. No real money is involved, it is a project to showcase my skills in Android and Java. The Application was developed using a MVC approach, with proper programming conventions and aappropriate data encapsulation.
+A Banking app made for Android using Android Studio. No real money is involved, it is a project to showcase my knowledge and practical skill in Android development with Java. The Application was developed using a MVC approach, with proper programming conventions and aappropriate data encapsulation.
 
 # ANDROID DEVELOPMENT CONCEPTS USED
 
@@ -18,16 +18,11 @@ A Banking app made for Android using Android Studio. No real money is involved, 
 
 - Adapters: Personally created adapters are used to display custom information in ListView's and Spinner's. The adapters used are for accounts, as well as payments and transfers. 
 
-- File Output: An option allows the user to output their current profile information to a text file, saved on their device
-
-- Networking: A button allows the user to select a web browser and view my portfolio. The following URL is used: http://banksmic.dev.fast.sheridanc.on.ca/
-
 - Fundamental Programming Concepts: ArrayList, If statements, For loops, Constructor overloading, Accessor/Mutator methods, etc.
 
 # NOTABLE MENTIONS
 
 - The text that the user sees is found in strings.xml, if multiple language support is added, the strings in the file can be converted to the language of preference for the user
-- Each layout file uses ConstraintLayout, allowing it to properly scale depending on the size of the screen
 - Runs on Android API 19 and up
 
 # CURRENTLY IN DEVELOPMENT
