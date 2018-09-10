@@ -94,8 +94,7 @@ public class Account {
      */
     public String toTransactionString() { return (accountName + " (" + accountNo + ")"); }
 
-    public void addTransactionFromDB(Transaction transactionDB) {
-        Transaction transaction = transactionDB;
-        transactions.add(transaction);
+    public void setTransactions(ArrayList<Transaction> transactions) {
+        this.transactions = transactions;
     }
 }

@@ -232,10 +232,10 @@ public class AccountOverviewFragment extends Fragment {
 
                     if (!balance.equals("")) {
                         userProfile.getAccounts().get(userProfile.getAccounts().size()-1).addDepositTransaction(Double.parseDouble(edtInitAccountBalance.getText().toString()));
-
                     }
 
                     applicationDb.saveNewAccount(userProfile, userProfile.getAccounts().get(userProfile.getAccounts().size()-1));
+                    applicationDb.saveNewTransaction(userProfile, userProfile.getAccounts().get(userProfile.getAccounts().size()-1).getAccountNo(), userProfile.getAccounts().get(userProfile.getAccounts().size()-1).getTransactions().get(userProfile.getAccounts().get(userProfile.getAccounts().size()-1).getTransactions().size()-1));
 
                     Toast.makeText(this.getActivity(), R.string.acc_saved_successfully, Toast.LENGTH_SHORT).show();
 

@@ -76,6 +76,9 @@ public class Profile {
         Account account = new Account(accountName, accno, accountBalance);
         accounts.add(account);
     }
+    public void setAccountsFromDB(ArrayList<Account> accounts) {
+        this.accounts = accounts;
+    }
 
     public void addTransferTransaction(int sendingAccIndex, int recievingAccIndex, double transferAmount) {
         Account sendingAccount = getAccounts().get(sendingAccIndex);
@@ -94,9 +97,14 @@ public class Profile {
      * method used to add a payee to the profile
      * @param payeeName
      */
+
     public void addPayee(String payeeName) {
         String payeeID = "P" + (payees.size() + 1);
         Payee payee = new Payee(payeeID, payeeName);
         payees.add(payee);
+    }
+
+    public void setPayeesFromDB(ArrayList<Payee> payees) {
+        this.payees = payees;
     }
 }

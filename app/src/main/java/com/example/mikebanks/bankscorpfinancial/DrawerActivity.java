@@ -137,9 +137,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         json = userPreferences.getString("LastProfileUsed", "");
         userProfile = gson.fromJson(json, Profile.class);
 
-        loadAccounts();
-        loadPayees();
-        loadTransactions();
+        loadFromDB();
 
         SharedPreferences.Editor prefsEditor = userPreferences.edit();
         json = gson.toJson(userProfile);
@@ -191,41 +189,14 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         txtUsername.setText(userProfile.getUsername());
     }
 
-    private void loadPayees() {
+    private void loadFromDB() {
         applicationDb = new ApplicationDB(getApplicationContext());
 
-        ArrayList<Payee> payees = applicationDb.getPayeesFromCurrentProfile(userProfile.getDbId());
-
-        for (int i = 0; i < payees.size(); i++) {
-            userProfile.addPayee(payees.get(i).getPayeeName());
-        }
-    }
-
-    private void loadAccounts() {
-        applicationDb = new ApplicationDB(getApplicationContext());
-
-        ArrayList<Account> accounts = applicationDb.getAccountsFromCurrentProfile(userProfile.getDbId());
-
-        if (userProfile.getAccounts().size() == 0) {
-            for (int i = 0; i < accounts.size(); i++) {
-                userProfile.addAccount(accounts.get(i).getAccountName(), accounts.get(i).getAccountBalance());
-            }
-        }
-    }
-
-    private void loadTransactions() {
-
-        applicationDb = new ApplicationDB(getApplicationContext());
-        ArrayList<Transaction> transactions;
+        userProfile.setPayeesFromDB(applicationDb.getPayeesFromCurrentProfile(userProfile.getDbId()));
+        userProfile.setAccountsFromDB(applicationDb.getAccountsFromCurrentProfile(userProfile.getDbId()));
 
         for (int iAccount = 0; iAccount < userProfile.getAccounts().size(); iAccount++) {
-            transactions = applicationDb.getTransactionsFromCurrentAccount(userProfile.getDbId(), userProfile.getAccounts().get(iAccount).toTransactionString());
-            if (transactions.size() > 0 && userProfile.getAccounts().get(iAccount).getTransactions().size() == 0) {
-
-                for (int iTrans = 0; iTrans < transactions.size(); iTrans++) {
-                    userProfile.getAccounts().get(iAccount).addTransactionFromDB(transactions.get(iTrans));
-                }
-            }
+            userProfile.getAccounts().get(iAccount).setTransactions(applicationDb.getTransactionsFromCurrentAccount(userProfile.getDbId(), userProfile.getAccounts().get(iAccount).getAccountNo()));
         }
     }
 
