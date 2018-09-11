@@ -75,6 +75,8 @@ public class AccountOverviewFragment extends Fragment {
         bundle = this.getArguments();
 
         boolean displayAccountDialogOnLaunch = false;
+
+        //TODO: Fix bug where you go to Transactions then return, and the dialog appears (something to do with the bundle not being null - check the number of accounts and the bundle?
         if (bundle != null) {
             displayAccountDialogOnLaunch = bundle.getBoolean("DisplayAccountDialog", false);
         }

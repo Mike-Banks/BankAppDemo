@@ -130,10 +130,10 @@ public class TransferFragment extends Fragment {
 
                 Double transferAmount = Double.parseDouble(edtTransferAmount.getText().toString());
 
-                userProfile.addTransferTransaction(sendingAccIndex, receivingAccIndex, transferAmount);
-
                 Account sendingAccount = (Account) spnSendingAccount.getItemAtPosition(sendingAccIndex);
                 Account receivingAccount = (Account) spnReceivingAccount.getItemAtPosition(receivingAccIndex);
+
+                userProfile.addTransferTransaction(sendingAccount, receivingAccount, transferAmount);
 
                 spnSendingAccount.setAdapter(accountAdapter);
                 spnReceivingAccount.setAdapter(accountAdapter);
@@ -142,10 +142,15 @@ public class TransferFragment extends Fragment {
                 spnReceivingAccount.setSelection(receivingAccIndex);
 
                 ApplicationDB applicationDb = new ApplicationDB(getActivity().getApplicationContext());
+
+                applicationDb.overwriteAccount(userProfile, sendingAccount);
+                applicationDb.overwriteAccount(userProfile, receivingAccount);
+
                 applicationDb.saveNewTransaction(userProfile, sendingAccount.getAccountNo(),
                         sendingAccount.getTransactions().get(sendingAccount.getTransactions().size()-1));
                 applicationDb.saveNewTransaction(userProfile, receivingAccount.getAccountNo(),
                         receivingAccount.getTransactions().get(receivingAccount.getTransactions().size()-1));
+
 
                 SharedPreferences.Editor prefsEditor = userPreferences.edit();
                 json = gson.toJson(userProfile);

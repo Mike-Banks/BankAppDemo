@@ -228,7 +228,7 @@ public class PaymentFragment extends Fragment {
                 spnSelectAccount.setSelection(selectedAccountIndex);
 
                 ApplicationDB applicationDb = new ApplicationDB(getActivity().getApplicationContext());
-                applicationDb.saveNewTransaction(userProfile, userProfile.getAccounts().get(selectedAccountIndex).toTransactionString(), userProfile.getAccounts().get(selectedAccountIndex).getTransactions().get(userProfile.getAccounts().get(selectedAccountIndex).getTransactions().size()-1));
+                applicationDb.saveNewTransaction(userProfile, userProfile.getAccounts().get(selectedAccountIndex).getAccountNo(), userProfile.getAccounts().get(selectedAccountIndex).getTransactions().get(userProfile.getAccounts().get(selectedAccountIndex).getTransactions().size()-1));
                 applicationDb.overwriteAccount(userProfile, userProfile.getAccounts().get(selectedAccountIndex));
 
                 SharedPreferences.Editor prefsEditor = userPreferences.edit();

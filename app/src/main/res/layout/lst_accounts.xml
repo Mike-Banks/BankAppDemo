@@ -1,30 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="?android:attr/activatedBackgroundIndicator">
 
     <TextView
         android:id="@+id/txt_account_name"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:textAppearance="@android:style/TextAppearance.Holo.Large"
+        app:layout_constraintStart_toEndOf="@+id/img_account"
+        app:layout_constraintTop_toTopOf="parent"
         tools:text="ACCOUNT NAME" />
 
     <TextView
         android:id="@+id/txt_acc_no"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+        app:layout_constraintStart_toEndOf="@+id/img_account"
+        app:layout_constraintTop_toBottomOf="@+id/txt_balance"
         tools:text="ACCOUNT NO: " />
 
     <TextView
-        android:id="@+id/txt_to_acc"
-        android:layout_width="match_parent"
+        android:id="@+id/txt_balance"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:textAppearance="@android:style/TextAppearance.Holo.Medium"
         android:textColor="@android:color/holo_green_dark"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/img_account"
+        app:layout_constraintTop_toBottomOf="@+id/txt_account_name"
         tools:text="CURRENT BALANCE:" />
-</LinearLayout>
+
+    <ImageView
+        android:id="@+id/img_account"
+        android:layout_width="58dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/lst_account_icon"
+        android:contentDescription="Account Image" />
+</android.support.constraint.ConstraintLayout>

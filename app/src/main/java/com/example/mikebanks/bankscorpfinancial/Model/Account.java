@@ -69,14 +69,32 @@ public class Account {
      */
     public void addPaymentTransaction (String payee, double amount) {
         accountBalance -= amount;
-        Transaction payment = new Transaction("P-T" + (transactions.size() + 1), payee, amount);
+
+        int paymentCount = 0;
+
+        for (int i = 0; i < transactions.size(); i++) {
+            if (transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.PAYMENT)  {
+                paymentCount++;
+            }
+        }
+
+        Transaction payment = new Transaction("T" + (transactions.size() + 1) + "-P" + (paymentCount+1), payee, amount);
         transactions.add(payment);
     }
 
     public void addDepositTransaction(double amount) {
         accountBalance += amount;
-        //TODO: Loop through transactions, find how many deposits there are: Trans ID: T1-D1 (# of trans - # of deposits)
-        Transaction deposit = new Transaction("D-T" + (transactions.size() + 1), amount);
+
+        //TODO: Could be a better way - ie. each time a deposit is added, add it to the master count (global variable - persisted?)
+        int depositscount = 0;
+
+        for (int i = 0; i < transactions.size(); i++) {
+            if (transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.DEPOSIT)  {
+                depositscount++;
+            }
+        }
+
+        Transaction deposit = new Transaction("T" + (transactions.size() + 1) + "-D" + (depositscount+1), amount);
         transactions.add(deposit);
     }
 

@@ -80,18 +80,26 @@ public class Profile {
         this.accounts = accounts;
     }
 
-    public void addTransferTransaction(int sendingAccIndex, int recievingAccIndex, double transferAmount) {
-        Account sendingAccount = getAccounts().get(sendingAccIndex);
-        Account receivingAccount = getAccounts().get(recievingAccIndex);
+    public void addTransferTransaction(Account sendingAcc, Account receivingAcc, double transferAmount) {
 
-        sendingAccount.setAccountBalance(sendingAccount.getAccountBalance() - transferAmount);
-        receivingAccount.setAccountBalance(receivingAccount.getAccountBalance() + transferAmount);
+        sendingAcc.setAccountBalance(sendingAcc.getAccountBalance() - transferAmount);
+        receivingAcc.setAccountBalance(receivingAcc.getAccountBalance() + transferAmount);
 
-        Transaction transfer = new Transaction("T-T" + getAccounts().size()+1, sendingAccount.toTransactionString(),
-                receivingAccount.toTransactionString(), transferAmount);
+        int sendingAccTransferCount = 0;
+        int receivingAccTransferCount = 0;
+        for (int i = 0; i < sendingAcc.getTransactions().size(); i ++) {
+            if (sendingAcc.getTransactions().get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.TRANSFER) {
+                sendingAccTransferCount++;
+            }
+        }
+        for (int i = 0; i < receivingAcc.getTransactions().size(); i++) {
+            if (receivingAcc.getTransactions().get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.TRANSFER) {
+                receivingAccTransferCount++;
+            }
+        }
 
-        sendingAccount.getTransactions().add(transfer);
-        receivingAccount.getTransactions().add(transfer);
+        sendingAcc.getTransactions().add(new Transaction("T" + (sendingAcc.getTransactions().size() + 1) + "-T" + (sendingAccTransferCount+1), sendingAcc.toTransactionString(), receivingAcc.toTransactionString(), transferAmount));
+        receivingAcc.getTransactions().add(new Transaction("T" + (receivingAcc.getTransactions().size() + 1) + "-T" + (receivingAccTransferCount+1), sendingAcc.toTransactionString(), receivingAcc.toTransactionString(), transferAmount));
     }
     /**
      * method used to add a payee to the profile

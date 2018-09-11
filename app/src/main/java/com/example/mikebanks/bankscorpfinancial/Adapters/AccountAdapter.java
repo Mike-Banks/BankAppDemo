@@ -53,7 +53,7 @@ public class AccountAdapter extends ArrayAdapter<Account> {
         TextView txtAccountNo = convertView.findViewById(R.id.txt_acc_no);
         txtAccountNo.setText(context.getString(R.string.account_no) + " " + account.getAccountNo());
 
-        TextView txtAccountBalance = convertView.findViewById(R.id.txt_to_acc);
+        TextView txtAccountBalance = convertView.findViewById(R.id.txt_balance);
         txtAccountBalance.setText("Account balance: $" + String.format("%.2f",account.getAccountBalance()));
 
         return convertView;

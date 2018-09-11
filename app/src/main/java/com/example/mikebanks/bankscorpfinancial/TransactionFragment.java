@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.example.mikebanks.bankscorpfinancial.Adapters.DepositAdapter;
 import com.example.mikebanks.bankscorpfinancial.Adapters.PaymentAdapter;
+import com.example.mikebanks.bankscorpfinancial.Adapters.TransactionAdapter;
 import com.example.mikebanks.bankscorpfinancial.Adapters.TransferAdapter;
 import com.example.mikebanks.bankscorpfinancial.Model.Profile;
 import com.example.mikebanks.bankscorpfinancial.Model.Transaction;
@@ -30,33 +31,11 @@ public class TransactionFragment extends Fragment {
     private TextView txtAccountBalance;
     private TextView txtTransactionMsg;
 
-    private Button btnPayments;
-    private Button btnTransfers;
-    private Button btnDeposits;
-
     private TextView txtNoTransfersMsg;
     private TextView txtNoPaymentsMsg;
     private TextView txtNoDepositMsg;
 
-    private ListView lstPayments;
-    private ListView lstTransfers;
-    private ListView lstDeposits;
-
-    private View.OnClickListener clickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            switch(view.getId()) {
-                case R.id.btn_payments:
-                    displayPayments();
-                    break;
-                case R.id.btn_transfers:
-                    displayTransfers();
-                    break;
-                case R.id.btn_deposits:
-                    displayDeposits();
-            }
-        }
-    };
+    private ListView lstTransactions;
 
     private Gson gson;
     private String json;
@@ -80,14 +59,12 @@ public class TransactionFragment extends Fragment {
 
         getActivity().setTitle("Transactions");
         selectedAccountIndex = bundle.getInt("SelectedAccount", 0);
-
-        //TODO: Try and get more screen space for transactions
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+
         View rootView = inflater.inflate(R.layout.fragment_transaction, container, false);
 
         txtAccountName = rootView.findViewById(R.id.txt_account_name);
@@ -95,17 +72,11 @@ public class TransactionFragment extends Fragment {
         txtAccountBalance = rootView.findViewById(R.id.txt_to_acc);
         txtTransactionMsg = rootView.findViewById(R.id.txt_transactions_msg);
 
-        btnPayments = rootView.findViewById(R.id.btn_payments);
-        btnTransfers = rootView.findViewById(R.id.btn_transfers);
-        btnDeposits = rootView.findViewById(R.id.btn_deposits);
-
         txtNoPaymentsMsg = rootView.findViewById(R.id.txt_no_payments_msg);
         txtNoTransfersMsg = rootView.findViewById(R.id.txt_no_transfers_msg);
         txtNoDepositMsg = rootView.findViewById(R.id.txt_no_deposits_msg);
 
-        lstPayments = rootView.findViewById(R.id.lst_payments);
-        lstTransfers = rootView.findViewById(R.id.lst_transfers);
-        lstDeposits = rootView.findViewById(R.id.lst_deposits);
+        lstTransactions = rootView.findViewById(R.id.lst_transactions);
 
         ((DrawerActivity) getActivity()).showUpButton();
 
@@ -127,13 +98,10 @@ public class TransactionFragment extends Fragment {
         txtNoPaymentsMsg.setVisibility(GONE);
         txtNoDepositMsg.setVisibility(GONE);
 
-        btnPayments.setOnClickListener(clickListener);
-        btnTransfers.setOnClickListener(clickListener);
-        btnDeposits.setOnClickListener(clickListener);
-
-        getTransactionTypes();
-        checkTransactionHistory();
-        setupAdapters();
+        //getTransactionTypes();
+        //checkTransactionHistory();
+        //setupAdapters();
+        setupTransactionAdapter();
 
         txtAccountName.setText("Account Name:" + " " + userProfile.getAccounts().get(selectedAccountIndex).getAccountName());
         txtAccountNo.setText("Account No:" + " " + userProfile.getAccounts().get(selectedAccountIndex).getAccountNo());
@@ -163,49 +131,43 @@ public class TransactionFragment extends Fragment {
 
             txtTransactionMsg.setVisibility(GONE);
 
-            btnPayments.setVisibility(VISIBLE);
-            btnTransfers.setVisibility(VISIBLE);
-            btnDeposits.setVisibility(VISIBLE);
-
             if (containsPayments) {
-                btnPayments.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-                lstTransfers.setVisibility(GONE);
-                lstPayments.setVisibility(VISIBLE);
-                lstDeposits.setVisibility(GONE);
+                lstTransactions.setVisibility(VISIBLE);
             } else if (containsTransfers){
-                btnTransfers.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-                lstTransfers.setVisibility(VISIBLE);
-                lstPayments.setVisibility(GONE);
-                lstDeposits.setVisibility(GONE);
+                lstTransactions.setVisibility(GONE);
             } else {
-                btnDeposits.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-                lstDeposits.setVisibility(VISIBLE);
-                lstPayments.setVisibility(GONE);
-                lstTransfers.setVisibility(GONE);
+                lstTransactions.setVisibility(GONE);
             }
 
         } else {
 
             txtTransactionMsg.setVisibility(VISIBLE);
 
-            btnPayments.setVisibility(GONE);
-            btnTransfers.setVisibility(GONE);
-            btnDeposits.setVisibility(GONE);
-
             txtNoTransfersMsg.setVisibility(GONE);
             txtNoPaymentsMsg.setVisibility(GONE);
             txtNoDepositMsg.setVisibility(GONE);
 
-            lstPayments.setVisibility(GONE);
-            lstTransfers.setVisibility(GONE);
-            lstDeposits.setVisibility(GONE);
+            lstTransactions.setVisibility(GONE);
         }
     }
 
-    //TODO: Have all transactions under the same adapter and ListView? Tricky, do some research - dynamically add TextViews? - have filtering options to only see them of one type?
     /**
      * method used to setup the adapters
      */
+    private void setupTransactionAdapter() {
+        ArrayList<Transaction> transactions = userProfile.getAccounts().get(selectedAccountIndex).getTransactions();
+
+        if (transactions.size() > 0) {
+            txtTransactionMsg.setVisibility(GONE);
+            lstTransactions.setVisibility(VISIBLE);
+            TransactionAdapter transactionAdapter = new TransactionAdapter(getActivity(), R.layout.lst_transactions, transactions);
+            lstTransactions.setAdapter(transactionAdapter);
+        } else {
+            txtTransactionMsg.setVisibility(VISIBLE);
+            lstTransactions.setVisibility(GONE);
+        }
+    }
+
     private void setupAdapters() {
 
         ArrayList<Transaction> transactions = userProfile.getAccounts().get(selectedAccountIndex).getTransactions();
@@ -224,13 +186,13 @@ public class TransactionFragment extends Fragment {
         }
 
         TransferAdapter transferAdapter = new TransferAdapter(getActivity(), R.layout.lst_transfers, transfers);
-        lstTransfers.setAdapter(transferAdapter);
+        //lstTransfers.setAdapter(transferAdapter);
 
         PaymentAdapter paymentAdapter = new PaymentAdapter(getActivity(), R.layout.lst_payments, payments);
-        lstPayments.setAdapter(paymentAdapter);
+        lstTransactions.setAdapter(paymentAdapter);
 
         DepositAdapter depositAdapter = new DepositAdapter(getActivity(), R.layout.lst_deposits, deposits);
-        lstDeposits.setAdapter(depositAdapter);
+        //lstDeposits.setAdapter(depositAdapter);
     }
 
     /**
@@ -238,22 +200,15 @@ public class TransactionFragment extends Fragment {
      */
     private void displayPayments() {
 
-        lstTransfers.setVisibility(GONE);
-        lstDeposits.setVisibility(GONE);
-
         txtNoTransfersMsg.setVisibility(GONE);
         txtNoDepositMsg.setVisibility(GONE);
 
-        btnPayments.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-        btnTransfers.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-        btnDeposits.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-
         if (containsPayments) {
             txtNoPaymentsMsg.setVisibility(GONE);
-            lstPayments.setVisibility(VISIBLE);
+            lstTransactions.setVisibility(VISIBLE);
         } else {
             txtNoPaymentsMsg.setVisibility(VISIBLE);
-            lstPayments.setVisibility(GONE);
+            lstTransactions.setVisibility(GONE);
         }
     }
 
@@ -262,43 +217,29 @@ public class TransactionFragment extends Fragment {
      */
     private void displayTransfers() {
 
-        lstPayments.setVisibility(GONE);
-        lstDeposits.setVisibility(GONE);
+        lstTransactions.setVisibility(GONE);
 
         txtNoPaymentsMsg.setVisibility(GONE);
         txtNoDepositMsg.setVisibility(GONE);
 
-        btnPayments.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-        btnTransfers.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-        btnDeposits.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-
         if (containsTransfers) {
             txtNoTransfersMsg.setVisibility(GONE);
-            lstTransfers.setVisibility(VISIBLE);
         } else {
             txtNoTransfersMsg.setVisibility(VISIBLE);
-            lstTransfers.setVisibility(GONE);
         }
 
     }
 
     private void displayDeposits() {
-        lstTransfers.setVisibility(GONE);
-        lstPayments.setVisibility(GONE);
+        lstTransactions.setVisibility(GONE);
 
         txtNoPaymentsMsg.setVisibility(GONE);
         txtNoTransfersMsg.setVisibility(GONE);
 
-        btnPayments.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-        btnTransfers.setBackgroundColor(getResources().getColor(android.R.color.darker_gray));
-        btnDeposits.setBackgroundColor(getResources().getColor(android.R.color.holo_green_light));
-
         if (containsDeposits) {
             txtNoDepositMsg.setVisibility(GONE);
-            lstDeposits.setVisibility(VISIBLE);
         } else {
             txtNoDepositMsg.setVisibility(VISIBLE);
-            lstDeposits.setVisibility(GONE);
         }
 
     }
