@@ -29,7 +29,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class AccountOverviewFragment extends Fragment {
 
-    private boolean displayAccountDialogOnLaunch;
+    private Bundle bundle;
 
     FloatingActionButton fab;
     private ListView lstAccounts;
@@ -63,7 +63,6 @@ public class AccountOverviewFragment extends Fragment {
     //TODO D2: Add functionality to remove payees and profiles as well
     //TODO D3: Add swiping functionality so that the user can swipe on the account to remove or see details
 
-    //KEEP ME
     private int selectedAccountIndex;
 
     public AccountOverviewFragment() {
@@ -73,9 +72,9 @@ public class AccountOverviewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle bundle = this.getArguments();
+        bundle = this.getArguments();
 
-        displayAccountDialogOnLaunch = false;
+        boolean displayAccountDialogOnLaunch = false;
         if (bundle != null) {
             displayAccountDialogOnLaunch = bundle.getBoolean("DisplayAccountDialog", false);
         }
@@ -87,7 +86,7 @@ public class AccountOverviewFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_account_overview, container, false);
 
-        fab = rootView.findViewById(R.id.floating_action_button);
+        fab = rootView.findViewById(R.id.floating_action_btn);
 
         lstAccounts = rootView.findViewById(R.id.lst_accounts);
         txtTitleMessage = rootView.findViewById(R.id.txt_title_msg);
@@ -98,7 +97,7 @@ public class AccountOverviewFragment extends Fragment {
 
         setValues();
 
-        if (displayAccountDialogOnLaunch) {
+        if (bundle != null) {
             displayAccountDialog();
         }
         return rootView;
@@ -120,11 +119,11 @@ public class AccountOverviewFragment extends Fragment {
             }
         });
 
-        edtAccountName = accountDialog.findViewById(R.id.edt_acc_name);
-        edtInitAccountBalance = accountDialog.findViewById(R.id.edt_init_bal); //TODO: Add initial balance to deposit transactions
+        edtAccountName = accountDialog.findViewById(R.id.edt_payee_name);
+        edtInitAccountBalance = accountDialog.findViewById(R.id.edt_init_bal);
 
         btnCancel = accountDialog.findViewById(R.id.btn_cancel_dialog);
-        btnAddAccount = accountDialog.findViewById(R.id.btn_add_acc);
+        btnAddAccount = accountDialog.findViewById(R.id.btn_add_payee);
 
         btnCancel.setOnClickListener(addAccountClickListener);
         btnAddAccount.setOnClickListener(addAccountClickListener);
@@ -207,12 +206,14 @@ public class AccountOverviewFragment extends Fragment {
             } catch (Exception e) {
                 if (!edtInitAccountBalance.getText().toString().equals("")) {
                     Toast.makeText(getActivity(), "Please enter a valid amount", Toast.LENGTH_SHORT).show();
+                    edtInitAccountBalance.getText().clear();
                 }
             }
 
             if (edtAccountName.getText().toString().length() > 10) {
 
                 Toast.makeText(this.getActivity(), R.string.account_name_exceeds_char, Toast.LENGTH_SHORT).show();
+                edtAccountName.getText().clear();
 
             } else if ((isNum) || balance.equals("")) {
 
@@ -231,11 +232,15 @@ public class AccountOverviewFragment extends Fragment {
                     userProfile.addAccount(edtAccountName.getText().toString(), 0);
 
                     if (!balance.equals("")) {
-                        userProfile.getAccounts().get(userProfile.getAccounts().size()-1).addDepositTransaction(Double.parseDouble(edtInitAccountBalance.getText().toString()));
+                        if (isNum) {
+                           if (Double.parseDouble(edtInitAccountBalance.getText().toString()) >= 0.01) {
+                               userProfile.getAccounts().get(userProfile.getAccounts().size()-1).addDepositTransaction(Double.parseDouble(edtInitAccountBalance.getText().toString()));
+                               applicationDb.saveNewTransaction(userProfile, userProfile.getAccounts().get(userProfile.getAccounts().size()-1).getAccountNo(), userProfile.getAccounts().get(userProfile.getAccounts().size()-1).getTransactions().get(userProfile.getAccounts().get(userProfile.getAccounts().size()-1).getTransactions().size()-1));
+                           }
+                        }
                     }
 
                     applicationDb.saveNewAccount(userProfile, userProfile.getAccounts().get(userProfile.getAccounts().size()-1));
-                    applicationDb.saveNewTransaction(userProfile, userProfile.getAccounts().get(userProfile.getAccounts().size()-1).getAccountNo(), userProfile.getAccounts().get(userProfile.getAccounts().size()-1).getTransactions().get(userProfile.getAccounts().get(userProfile.getAccounts().size()-1).getTransactions().size()-1));
 
                     Toast.makeText(this.getActivity(), R.string.acc_saved_successfully, Toast.LENGTH_SHORT).show();
 
@@ -257,6 +262,7 @@ public class AccountOverviewFragment extends Fragment {
 
                 } else {
                     Toast.makeText(this.getActivity(), R.string.account_name_error, Toast.LENGTH_SHORT).show();
+                    edtAccountName.getText().clear();
                 }
             }
         } else {

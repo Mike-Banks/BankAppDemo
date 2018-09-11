@@ -145,6 +145,9 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
         setupDrawerListener();
         setupHeader();
+
+        //onNavigationItemSelected(navView.getMenu().getItem().); TODO: Try calling the event listener manually for navigation, get rid of the manualNav method
+
         manualNavigation(manualNavID.DASHBOARD_ID, null);
     }
 
@@ -247,7 +250,6 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
         depositDialog = new Dialog(this);
         depositDialog.setContentView(R.layout.deposit_dialog);
-        depositDialog.setTitle("Make a Deposit");
 
         depositDialog.setCanceledOnTouchOutside(true);
         depositDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
@@ -329,6 +331,16 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         return true;
     }
 
+    public void displayHelpDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Help")
+                .setMessage("This Bank App Demo was made by Mike Banks. Soon, this dialog will give the user help, depending on where they are in the app");
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -338,7 +350,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
-            return true;
+            displayHelpDialog();
         }
 
         return super.onOptionsItemSelected(item);
@@ -384,8 +396,10 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
             case R.id.nav_payment:
                 if (userProfile.getAccounts().size() < 1) {
                     displayAccountAlertADialog("Payment");
+                } else {
+                    title = "Payment";
+                    fragmentClass = PaymentFragment.class;
                 }
-                title = "Payment";
                 break;
             case R.id.nav_settings:
                 //TODO: Make Settings fragment
