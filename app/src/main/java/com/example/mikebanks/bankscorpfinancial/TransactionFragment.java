@@ -6,19 +6,26 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.mikebanks.bankscorpfinancial.Adapters.AccountAdapter;
 import com.example.mikebanks.bankscorpfinancial.Adapters.DepositAdapter;
 import com.example.mikebanks.bankscorpfinancial.Adapters.PaymentAdapter;
 import com.example.mikebanks.bankscorpfinancial.Adapters.TransactionAdapter;
 import com.example.mikebanks.bankscorpfinancial.Adapters.TransferAdapter;
+import com.example.mikebanks.bankscorpfinancial.Model.Account;
 import com.example.mikebanks.bankscorpfinancial.Model.Profile;
 import com.example.mikebanks.bankscorpfinancial.Model.Transaction;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.view.View.GONE;
@@ -26,14 +33,113 @@ import static android.view.View.VISIBLE;
 
 public class TransactionFragment extends Fragment {
 
-    private TextView txtAccountName;
-    private TextView txtAccountNo;
-    private TextView txtAccountBalance;
-    private TextView txtTransactionMsg;
+    public enum TransactionTypeFilter {
+        ALL_TRANSACTIONS(0),
+        PAYMENTS(1),
+        TRANSFERS(2),
+        DEPOSITS(3);
 
-    private TextView txtNoTransfersMsg;
-    private TextView txtNoPaymentsMsg;
-    private TextView txtNoDepositMsg;
+        private final int transFilterID;
+        TransactionTypeFilter(int transFilterID) {
+            this.transFilterID = transFilterID;
+        }
+
+        public TransactionTypeFilter getTransFilter(int index) {
+            for (TransactionTypeFilter filter : TransactionTypeFilter.values()) {
+                if (filter.transFilterID == index) {
+                    return filter;
+                }
+            }
+            return null;
+        }
+    }
+
+    public enum DateFilter {
+        OLDEST_NEWEST(0),
+        NEWEST_OLDEST(1);
+
+        private final int dateFilterID;
+        DateFilter(int dateFilterID) {
+            this.dateFilterID = dateFilterID;
+        }
+
+        public DateFilter getDateFilter(int index) {
+            for (DateFilter filter : DateFilter.values()) {
+                if (filter.dateFilterID == index) {
+                    return filter;
+                }
+            }
+            return null;
+        }
+
+    }
+
+    class TransactionComparator implements Comparator<Transaction> {
+        public int compare(Transaction transOne, Transaction transTwo) {
+
+            Date dateOne = null;
+            Date dateTwo = null;
+
+            try {
+                dateOne = Transaction.DATE_FORMAT.parse(transOne.getTimestamp());
+                dateTwo = Transaction.DATE_FORMAT.parse(transTwo.getTimestamp());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            if (dateOne.compareTo(dateTwo) > 0) {
+                return (1);
+            } else if (dateOne.compareTo(dateTwo) < 0) {
+                return (-1);
+            } else if (dateOne.compareTo(dateTwo) == 0) {
+                return (1);
+            }
+            return (1);
+        }
+    }
+
+    private TextView txtAccountName;
+    private TextView txtAccountBalance;
+
+    private TextView txtTransactionMsg;
+    private TextView txtTransfersMsg;
+    private TextView txtPaymentsMsg;
+    private TextView txtDepositMsg;
+
+    private Spinner spnAccounts;
+    private Spinner spnTransactionTypeFilter;
+    private Spinner spnDateFilter;
+
+    private TransactionTypeFilter transFilter;
+    private DateFilter dateFilter;
+
+    Spinner.OnItemSelectedListener spnClickListener = new AdapterView.OnItemSelectedListener() {
+        @Override
+        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            if (adapterView.getId() == spnAccounts.getId()) {
+                selectedAccountIndex = i;
+                txtAccountName.setText("Account: " + userProfile.getAccounts().get(selectedAccountIndex).toTransactionString());
+                txtAccountBalance.setText("Balance: $" + String.format("%.2f",userProfile.getAccounts().get(selectedAccountIndex).getAccountBalance()));
+            }
+            else if (adapterView.getId() == spnTransactionTypeFilter.getId()) {
+                transFilter = transFilter.getTransFilter(i);
+            }
+            else if (adapterView.getId() == spnDateFilter.getId()) {
+                dateFilter = dateFilter.getDateFilter(i);
+            }
+
+            setupTransactionAdapter(selectedAccountIndex, transFilter, dateFilter);
+        }
+
+        @Override
+        public void onNothingSelected(AdapterView<?> adapterView) {
+
+        }
+    };
+
+    private ArrayAdapter<Account> accountAdapter;
+    private ArrayAdapter<String> transTypeAdapter;
+    private ArrayAdapter<String> dateFilterAdapter;
 
     private ListView lstTransactions;
 
@@ -43,10 +149,6 @@ public class TransactionFragment extends Fragment {
     private Profile userProfile;
 
     private int selectedAccountIndex;
-
-    private boolean containsTransfers;
-    private boolean containsPayments;
-    private boolean containsDeposits;
 
     public TransactionFragment() {
         // Required empty public constructor
@@ -68,13 +170,16 @@ public class TransactionFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_transaction, container, false);
 
         txtAccountName = rootView.findViewById(R.id.txt_account_name);
-        txtAccountNo = rootView.findViewById(R.id.txt_account_no);
-        txtAccountBalance = rootView.findViewById(R.id.txt_to_acc);
-        txtTransactionMsg = rootView.findViewById(R.id.txt_transactions_msg);
+        txtAccountBalance = rootView.findViewById(R.id.txt_account_balance);
 
-        txtNoPaymentsMsg = rootView.findViewById(R.id.txt_no_payments_msg);
-        txtNoTransfersMsg = rootView.findViewById(R.id.txt_no_transfers_msg);
-        txtNoDepositMsg = rootView.findViewById(R.id.txt_no_deposits_msg);
+        txtTransactionMsg = rootView.findViewById(R.id.txt_no_transactions);
+        txtPaymentsMsg = rootView.findViewById(R.id.txt_no_payments);
+        txtTransfersMsg = rootView.findViewById(R.id.txt_no_transfers);
+        txtDepositMsg = rootView.findViewById(R.id.txt_no_deposits);
+
+        spnAccounts = rootView.findViewById(R.id.spn_accounts);
+        spnTransactionTypeFilter = rootView.findViewById(R.id.spn_type_filter);
+        spnDateFilter = rootView.findViewById(R.id.spn_date_filter);
 
         lstTransactions = rootView.findViewById(R.id.lst_transactions);
 
@@ -94,154 +199,129 @@ public class TransactionFragment extends Fragment {
         json = userPreferences.getString("LastProfileUsed", "");
         userProfile = gson.fromJson(json, Profile.class);
 
-        txtNoTransfersMsg.setVisibility(GONE);
-        txtNoPaymentsMsg.setVisibility(GONE);
-        txtNoDepositMsg.setVisibility(GONE);
+        transFilter = TransactionTypeFilter.ALL_TRANSACTIONS;
+        dateFilter = DateFilter.OLDEST_NEWEST;
 
-        //getTransactionTypes();
-        //checkTransactionHistory();
-        //setupAdapters();
-        setupTransactionAdapter();
+        setupTransactionAdapter(selectedAccountIndex, transFilter, dateFilter); //TODO: Implement date filter
 
-        txtAccountName.setText("Account Name:" + " " + userProfile.getAccounts().get(selectedAccountIndex).getAccountName());
-        txtAccountNo.setText("Account No:" + " " + userProfile.getAccounts().get(selectedAccountIndex).getAccountNo());
-        txtAccountBalance.setText("Account Balance: $" + String.format("%.2f",userProfile.getAccounts().get(selectedAccountIndex).getAccountBalance()));
+        setupSpinners();
+        spnAccounts.setSelection(selectedAccountIndex);
+
+        txtAccountName.setText("Account: " + userProfile.getAccounts().get(selectedAccountIndex).toTransactionString());
+        txtAccountBalance.setText("Balance: $" + String.format("%.2f",userProfile.getAccounts().get(selectedAccountIndex).getAccountBalance()));
     }
 
-    /**
-     * method used to get the transaction types
-     */
-    private void getTransactionTypes() {
-        for (int i = 0; i < userProfile.getAccounts().get(selectedAccountIndex).getTransactions().size(); i++) {
-            if (userProfile.getAccounts().get(selectedAccountIndex).getTransactions().get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.TRANSFER) {
-                containsTransfers = true;
-            } else if (userProfile.getAccounts().get(selectedAccountIndex).getTransactions().get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.PAYMENT) {
-                containsPayments = true;
-            } else {
-                containsDeposits = true;
-            }
-        }
-    }
+    private void setupSpinners() {
 
-    /**
-     * method used to check the transaction history of the current account
-     */
-    private void checkTransactionHistory() {
-        if (userProfile.getAccounts().get(selectedAccountIndex).getTransactions().size() != 0) {
+        accountAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, userProfile.getAccounts());
+        accountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnAccounts.setAdapter(accountAdapter);
 
-            txtTransactionMsg.setVisibility(GONE);
+        transTypeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.transaction_filters));
+        transTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnTransactionTypeFilter.setAdapter(transTypeAdapter);
 
-            if (containsPayments) {
-                lstTransactions.setVisibility(VISIBLE);
-            } else if (containsTransfers){
-                lstTransactions.setVisibility(GONE);
-            } else {
-                lstTransactions.setVisibility(GONE);
-            }
+        dateFilterAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.date_filters));
+        dateFilterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spnDateFilter.setAdapter(dateFilterAdapter);
 
-        } else {
+        spnAccounts.setOnItemSelectedListener(spnClickListener);
+        spnTransactionTypeFilter.setOnItemSelectedListener(spnClickListener);
+        spnDateFilter.setOnItemSelectedListener(spnClickListener);
 
-            txtTransactionMsg.setVisibility(VISIBLE);
-
-            txtNoTransfersMsg.setVisibility(GONE);
-            txtNoPaymentsMsg.setVisibility(GONE);
-            txtNoDepositMsg.setVisibility(GONE);
-
-            lstTransactions.setVisibility(GONE);
-        }
     }
 
     /**
      * method used to setup the adapters
      */
-    private void setupTransactionAdapter() {
+    private void setupTransactionAdapter(int selectedAccountIndex, TransactionTypeFilter transFilter, DateFilter dateFilter) {
         ArrayList<Transaction> transactions = userProfile.getAccounts().get(selectedAccountIndex).getTransactions();
 
+        txtDepositMsg.setVisibility(GONE);
+        txtTransfersMsg.setVisibility(GONE);
+        txtPaymentsMsg.setVisibility(GONE);
+
         if (transactions.size() > 0) {
+
             txtTransactionMsg.setVisibility(GONE);
             lstTransactions.setVisibility(VISIBLE);
-            TransactionAdapter transactionAdapter = new TransactionAdapter(getActivity(), R.layout.lst_transactions, transactions);
-            lstTransactions.setAdapter(transactionAdapter);
+
+            if (dateFilter == DateFilter.OLDEST_NEWEST) {
+                Collections.sort(transactions, new TransactionComparator());
+            } else if (dateFilter == DateFilter.NEWEST_OLDEST) {
+                Collections.sort(transactions, Collections.reverseOrder(new TransactionComparator()));
+            }
+
+            if (transFilter == TransactionTypeFilter.ALL_TRANSACTIONS) {
+                TransactionAdapter transactionAdapter = new TransactionAdapter(getActivity(), R.layout.lst_transactions, transactions);
+                lstTransactions.setAdapter(transactionAdapter);
+            }
+            else if (transFilter == TransactionTypeFilter.PAYMENTS) {
+                displayPayments(transactions);
+            }
+            else if (transFilter == TransactionTypeFilter.TRANSFERS) {
+                displayTransfers(transactions);
+            }
+            else if (transFilter == TransactionTypeFilter.DEPOSITS) {
+                displayDeposits(transactions);
+            }
+
         } else {
             txtTransactionMsg.setVisibility(VISIBLE);
             lstTransactions.setVisibility(GONE);
         }
+
     }
 
-    private void setupAdapters() {
-
-        ArrayList<Transaction> transactions = userProfile.getAccounts().get(selectedAccountIndex).getTransactions();
-        ArrayList<Transaction> transfers = new ArrayList<>();
+    private void displayPayments(ArrayList<Transaction> transactions) {
         ArrayList<Transaction> payments = new ArrayList<>();
-        ArrayList<Transaction> deposits = new ArrayList<>();
+
+        for (int i = 0; i < transactions.size(); i++) {
+            if (transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.PAYMENT) {
+                payments.add(transactions.get(i));
+            }
+        }
+        if (payments.size() == 0) {
+            txtPaymentsMsg.setVisibility(VISIBLE);
+        } else {
+            lstTransactions.setVisibility(VISIBLE);
+            TransactionAdapter transactionAdapter = new TransactionAdapter(getActivity(), R.layout.lst_transactions, payments);
+            lstTransactions.setAdapter(transactionAdapter);
+        }
+    }
+
+    private void displayTransfers(ArrayList<Transaction> transactions) {
+        ArrayList<Transaction> transfers = new ArrayList<>();
 
         for (int i = 0; i < transactions.size(); i++) {
             if (transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.TRANSFER) {
                 transfers.add(transactions.get(i));
-            } else if (transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.PAYMENT){
-                payments.add(transactions.get(i));
-            } else {
+            }
+        }
+        if (transfers.size() == 0) {
+            txtTransfersMsg.setVisibility(VISIBLE);
+        } else {
+            lstTransactions.setVisibility(VISIBLE);
+            TransactionAdapter transactionAdapter = new TransactionAdapter(getActivity(), R.layout.lst_transactions, transfers);
+            lstTransactions.setAdapter(transactionAdapter);
+        }
+    }
+
+    private void displayDeposits(ArrayList<Transaction> transactions) {
+        ArrayList<Transaction> deposits = new ArrayList<>();
+
+        for (int i = 0; i < transactions.size(); i++) {
+            if (transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.DEPOSIT) {
                 deposits.add(transactions.get(i));
             }
         }
-
-        TransferAdapter transferAdapter = new TransferAdapter(getActivity(), R.layout.lst_transfers, transfers);
-        //lstTransfers.setAdapter(transferAdapter);
-
-        PaymentAdapter paymentAdapter = new PaymentAdapter(getActivity(), R.layout.lst_payments, payments);
-        lstTransactions.setAdapter(paymentAdapter);
-
-        DepositAdapter depositAdapter = new DepositAdapter(getActivity(), R.layout.lst_deposits, deposits);
-        //lstDeposits.setAdapter(depositAdapter);
-    }
-
-    /**
-     * method used to display the payments
-     */
-    private void displayPayments() {
-
-        txtNoTransfersMsg.setVisibility(GONE);
-        txtNoDepositMsg.setVisibility(GONE);
-
-        if (containsPayments) {
-            txtNoPaymentsMsg.setVisibility(GONE);
+        if (deposits.size() == 0) {
+            txtDepositMsg.setVisibility(VISIBLE);
+        } else {
             lstTransactions.setVisibility(VISIBLE);
-        } else {
-            txtNoPaymentsMsg.setVisibility(VISIBLE);
-            lstTransactions.setVisibility(GONE);
+            TransactionAdapter transactionAdapter = new TransactionAdapter(getActivity(), R.layout.lst_transactions, deposits);
+            lstTransactions.setAdapter(transactionAdapter);
         }
-    }
-
-    /**
-     * method used to display the transfers
-     */
-    private void displayTransfers() {
-
-        lstTransactions.setVisibility(GONE);
-
-        txtNoPaymentsMsg.setVisibility(GONE);
-        txtNoDepositMsg.setVisibility(GONE);
-
-        if (containsTransfers) {
-            txtNoTransfersMsg.setVisibility(GONE);
-        } else {
-            txtNoTransfersMsg.setVisibility(VISIBLE);
-        }
-
-    }
-
-    private void displayDeposits() {
-        lstTransactions.setVisibility(GONE);
-
-        txtNoPaymentsMsg.setVisibility(GONE);
-        txtNoTransfersMsg.setVisibility(GONE);
-
-        if (containsDeposits) {
-            txtNoDepositMsg.setVisibility(GONE);
-        } else {
-            txtNoDepositMsg.setVisibility(VISIBLE);
-        }
-
     }
 
 }

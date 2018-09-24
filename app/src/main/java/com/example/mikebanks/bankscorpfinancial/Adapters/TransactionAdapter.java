@@ -13,6 +13,8 @@ import android.widget.TextView;
 import com.example.mikebanks.bankscorpfinancial.Model.Account;
 import com.example.mikebanks.bankscorpfinancial.Model.Transaction;
 import com.example.mikebanks.bankscorpfinancial.R;
+import com.example.mikebanks.bankscorpfinancial.TransactionFragment;
+import com.example.mikebanks.bankscorpfinancial.TransferFragment;
 
 import java.util.ArrayList;
 

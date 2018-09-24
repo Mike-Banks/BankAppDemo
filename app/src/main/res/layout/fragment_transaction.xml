@@ -6,136 +6,180 @@
     android:layout_height="match_parent"
     tools:context=".TransactionFragment">
 
+    <Spinner
+        android:id="@+id/spn_accounts"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        app:layout_constraintEnd_toStartOf="@+id/spn_type_filter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_account" />
+
+    <Spinner
+        android:id="@+id/spn_type_filter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        app:layout_constraintEnd_toStartOf="@+id/spn_date_filter"
+        app:layout_constraintStart_toEndOf="@+id/spn_accounts"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_trans_type" />
+
+    <Spinner
+        android:id="@+id/spn_date_filter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/spn_type_filter"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_date_filter" />
+
     <TextView
         android:id="@+id/txt_account_name"
-        android:layout_width="wrap_content"
-        android:layout_height="22dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
-        android:textColor="@android:color/holo_green_dark"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="ACCOUNT NAME" />
-
-    <TextView
-        android:id="@+id/txt_account_no"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
-        android:textColor="@android:color/holo_green_dark"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_account_name"
-        tools:text="ACCOUNT NO" />
-
-    <TextView
-        android:id="@+id/txt_to_acc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:textAllCaps="false"
-        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
-        android:textColor="@android:color/holo_green_dark"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/txt_account_no"
-        app:layout_constraintTop_toBottomOf="@+id/txt_account_name"
-        tools:text="ACCOUNT BALANCE" />
-
-    <TextView
-        android:id="@+id/txt_transactions_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/transactions_title"
-        android:textAppearance="@android:style/TextAppearance.Holo.Large"
-        android:textColor="@android:color/holo_green_dark"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_account_no" />
-
-    <TextView
-        android:id="@+id/txt_transactions_msg"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
-        android:text="@string/no_transaction_msg"
+        android:text="ACC_NAME (ACC_NO)"
         android:textAlignment="center"
         android:textAppearance="@android:style/TextAppearance.Holo.Medium"
-        android:textColor="@android:color/black"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/txt_account_balance"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_transactions_title" />
+        app:layout_constraintTop_toBottomOf="@+id/spn_type_filter" />
+
+    <TextView
+        android:id="@+id/txt_account_balance"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:text="ACC_BALANCE"
+        android:textAlignment="center"
+        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/txt_account_name"
+        app:layout_constraintTop_toBottomOf="@+id/spn_type_filter" />
 
     <ListView
         android:id="@+id/lst_transactions"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginEnd="9dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_transactions_title"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_account_name" />
 
     <TextView
-        android:id="@+id/txt_no_payments_msg"
-        android:layout_width="0dp"
+        android:id="@+id/txt_no_transfers"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
-        android:text="@string/str_no_payments_msg"
+        android:text="No Transfers Found"
         android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+        android:textColor="@color/drawerHeader"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_no_deposits_msg" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_account_name" />
 
     <TextView
-        android:id="@+id/txt_no_transfers_msg"
-        android:layout_width="0dp"
+        android:id="@+id/txt_no_deposits"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="20dp"
-        android:text="@string/str_no_transfers"
+        android:text="No Deposits Found"
         android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+        android:textColor="@color/drawerHeader"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txt_no_deposits_msg" />
+        app:layout_constraintTop_toBottomOf="@+id/txt_account_name" />
 
     <TextView
-        android:id="@+id/txt_no_deposits_msg"
-        android:layout_width="0dp"
+        android:id="@+id/txt_no_payments"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="156dp"
-        android:text="You have not made any deposits with this account yet"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:text="No Payments Found"
         android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+        android:textColor="@color/drawerHeader"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_account_name" />
+
+    <TextView
+        android:id="@+id/txt_no_transactions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="20dp"
+        android:text="No Transactions Found for this Account"
+        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+        android:textColor="@color/drawerHeader"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_account_name" />
+
+    <TextView
+        android:id="@+id/lbl_account"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Account"
+        android:textAlignment="center"
+        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/lbl_trans_type"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/lbl_trans_type"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Type"
+        android:textAlignment="center"
+        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/lbl_date_filter"
+        app:layout_constraintStart_toEndOf="@+id/lbl_account"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/lbl_date_filter"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Order by"
+        android:textAlignment="center"
+        android:textAppearance="@android:style/TextAppearance.Holo.Medium"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/lbl_trans_type"
         app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

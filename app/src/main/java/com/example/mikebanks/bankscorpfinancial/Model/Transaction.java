@@ -17,7 +17,7 @@ public class Transaction {
         DEPOSIT
     }
 
-    private static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd - hh:mm a");
+    public static final DateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd - hh:mm a");
 
     private String transactionID;
     private String timestamp;

@@ -92,7 +92,16 @@
         <item>Saturday</item>
     </string-array>
 
-    <!-- TODO: DELETE ME AFTER FRAGMENTS ARE MADE ::::: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="transaction_filters">
+        <item>All</item>
+        <item>Payments</item>
+        <item>Transfers</item>
+        <item>Deposits</item>
+    </string-array>
+
+    <string-array name="date_filters">
+        <item>Old - New</item>
+        <item>New - Old</item>
+    </string-array>
 
 </resources>
