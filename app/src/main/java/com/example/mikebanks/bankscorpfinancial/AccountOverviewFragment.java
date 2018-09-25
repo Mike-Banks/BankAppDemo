@@ -29,7 +29,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class AccountOverviewFragment extends Fragment {
 
-    private Bundle bundle;
+    private boolean displayAccountDialogOnLaunch;
 
     FloatingActionButton fab;
     private ListView lstAccounts;
@@ -72,11 +72,10 @@ public class AccountOverviewFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        bundle = this.getArguments();
+        Bundle bundle = this.getArguments();
 
-        boolean displayAccountDialogOnLaunch = false;
+        displayAccountDialogOnLaunch = false;
 
-        //TODO: Fix bug where you go to Transactions then return, and the dialog appears (something to do with the bundle not being null - check the number of accounts and the bundle?
         if (bundle != null) {
             displayAccountDialogOnLaunch = bundle.getBoolean("DisplayAccountDialog", false);
         }
@@ -99,7 +98,7 @@ public class AccountOverviewFragment extends Fragment {
 
         setValues();
 
-        if (bundle != null) {
+        if (!displayAccountDialogOnLaunch || userProfile.getAccounts().size() == 0) {
             displayAccountDialog();
         }
         return rootView;

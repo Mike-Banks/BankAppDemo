@@ -92,7 +92,7 @@ public class LaunchActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    //TODO: NOTE: If pressing back when logged on reloads the same page rather than exiting the app - its this code here
+    //TODO: NOTE: This code can sometimes run multiple times if login is pressed quickly in succession
     public void login() {
         intent = new Intent(getApplicationContext(), DrawerActivity.class);
         startActivity(intent);

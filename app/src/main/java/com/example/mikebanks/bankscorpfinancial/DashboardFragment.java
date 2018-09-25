@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mikebanks.bankscorpfinancial.Model.Profile;
@@ -18,6 +19,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class DashboardFragment extends Fragment {
 
+    private ImageView imgTime;
     private TextView txtWelcome;
     private TextView txtMessage;
     private Button btnAddAccount;
@@ -44,6 +46,7 @@ public class DashboardFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView =  inflater.inflate(R.layout.fragment_dashboard, container, false);
 
+        imgTime = rootView.findViewById(R.id.img_time);
         txtWelcome = rootView.findViewById(R.id.txt_welcome);
         txtMessage = rootView.findViewById(R.id.txt_details_msg);
         btnAddAccount = rootView.findViewById(R.id.btn_add_account);
@@ -90,15 +93,18 @@ public class DashboardFragment extends Fragment {
 
         if (timeOfDay >= 5 && timeOfDay < 12) {
             welcomeString.append(getString(R.string.good_morning));
+            imgTime.setImageResource(R.drawable.morning_icon_96);
         } else if (timeOfDay >= 12 && timeOfDay < 17) {
             welcomeString.append(getString(R.string.good_afternoon));
-
+            imgTime.setImageResource(R.drawable.day_icon_96);
         } else {
             welcomeString.append(getString(R.string.good_evening));
+            imgTime.setImageResource(R.drawable.night_icon_96);
         }
 
         welcomeString.append(", ")
                 .append(userProfile.getFirstName())
+                .append(". Welcome to the Bank App Demo. ")
                 .append(getString(R.string.happy))
                 .append(" ");
 

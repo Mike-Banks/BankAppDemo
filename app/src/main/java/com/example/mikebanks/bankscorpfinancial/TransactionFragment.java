@@ -202,7 +202,7 @@ public class TransactionFragment extends Fragment {
         transFilter = TransactionTypeFilter.ALL_TRANSACTIONS;
         dateFilter = DateFilter.OLDEST_NEWEST;
 
-        setupTransactionAdapter(selectedAccountIndex, transFilter, dateFilter); //TODO: Implement date filter
+        setupTransactionAdapter(selectedAccountIndex, transFilter, dateFilter);
 
         setupSpinners();
         spnAccounts.setSelection(selectedAccountIndex);
