@@ -98,7 +98,7 @@ public class AccountOverviewFragment extends Fragment {
 
         setValues();
 
-        if (!displayAccountDialogOnLaunch || userProfile.getAccounts().size() == 0) {
+        if (displayAccountDialogOnLaunch || userProfile.getAccounts().size() == 0) {
             displayAccountDialog();
         }
         return rootView;
