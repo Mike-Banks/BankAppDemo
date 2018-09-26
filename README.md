@@ -10,6 +10,8 @@ The app starts out with a login screen, in which the user can either log in with
 
 - Multiple Fragments: What the user actually sees comes from the fragments of the application. These fragments are almost always launched from the activity that wraps them. Bundles are used to pass data from one fragment to another
 
+- Well-desgined UI Layouts: Multiple layout files are used, using a well-thought design that keeps the simplicity of the app, while serving optimal functionality. Most layout files are used for the fragments, while some are used for menus in the application, as well as custom layouts for dialogs.
+
 - Custom Toolbar: With the application using AppCompat, custom toolbars are a possibility. The toolbar is consistent throughout the app, with the XML code in a styles.xml file for re-use. The toolbar has a title that changes depending on the current fragment in use, and contains options for the user (including an options menu, back navigation, drawer menu).
 
 - DrawerLayout: The application has a DrawerLayout, which is esentially a sliding drawer that typically comes from the left slide of the screen (either by swiping near the left edge or by clicking the hamburger button in the top left of the screen). This menu hosts the different features of the application, with each option either navigation to a fragment (corresponding with the feature), or launching a dialog in some cases. The DrawerLayout is in the second Activity, which serves as the master container for most of the application's fragments.
