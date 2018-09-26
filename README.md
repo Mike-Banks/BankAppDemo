@@ -1,4 +1,4 @@
-[![Alt text for your video](https://www.youtube.com/watch?v=Qt9l7ImmQx8&feature=youtu.be/0.jpg)](https://www.youtube.com/watch?v=Qt9l7ImmQx8&feature=youtu.be)
+[![Bank App Demo Video](https://www.youtube.com/watch?v=Qt9l7ImmQx8&feature=youtu.be/0.jpg)](https://www.youtube.com/watch?v=Qt9l7ImmQx8&feature=youtu.be)
 
 # PROJECT DETAILS
 
