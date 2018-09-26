@@ -1,34 +1,32 @@
-# NOTE
-
-The project is currently being overhauled to have a DrawerLayout as the main menu, with each screen as a Fragment, rather than an Activity. Additionally, the Activities that are used will have a custom toolbar, which involves extending from Appcompat, rather than Activity.
-
 # BANK APP DEMO
 
-A Banking app made for Android using Android Studio. No real money is involved, it is a project to showcase my knowledge and practical skill in Android development with Java. The Application was developed using a MVC approach, with proper programming conventions and aappropriate data encapsulation.
+A Banking app made for Android using Android Studio. No real money is involved, it is a project to showcase my knowledge and practical skill in Android development with Java. The Application was developed using a MVC approach, using proper programming conventions, including documentation, error/exception handling, thorough program structure and memory efficiency.
+
+The app starts out with a login screen, in which the user can either log in with an existing profile, or click a button and create a new profile. When signed in, the user will be brought to their dashboard page, which (when first creating a profile), will prompt them to make their first account. Additionally, there is a menu that slides from the left which includes all of the options for the app, including Dashboard, Account Overview (and subsequently Transactions), Deposits, Payments, Transfers, Profile Settings and Logout. 
 
 # ANDROID DEVELOPMENT CONCEPTS USED
 
-- Multiple Activities: display multiple screens to the user, each serving their own banking purpose
+- Multiple Activities: There are two activities: one which has the fragments for logging in and creating a profile, and the other for hosting all of the features the bank app has, including account overview, payments, transactions, etc. The activites serve as containers for the different fragments throughout the application. The activities themselves do not display a view, but rather host the navigation code (among other things) to travel between fragments.
 
-- Intents: Passing data between activities (ie. when creating an account, the username and password that was entered by the user will be automatically entered in the login page, making the create profile-to-login experience more efficient).
+- Multiple Fragments: What the user actually sees comes from the fragments of the application. These fragments are almost always launched from the activity that wraps them. Bundles are used to pass data from one fragment to another
 
-- Shared Preferences: Saving the current profile (logged into by the user), and all of its general info, accounts and transactions. When initially logging into a profile, all of the data from that profile is loaded from the database (stores all profile data). This operation is performed once, in which the profile data is stored into Shared Preferences and can be updated and loaded efficiently across the different activities. JSON is involved in the reading and writing of data into Shared Preferences.
+- Custom Toolbar: With the application using AppCompat, custom toolbars are a possibility. The toolbar is consistent throughout the app, with the XML code in a styles.xml file for re-use. The toolbar has a title that changes depending on the current fragment in use, and contains options for the user (including an options menu, back navigation, drawer menu).
+
+- DrawerLayout: The application has a DrawerLayout, which is esentially a sliding drawer that typically comes from the left slide of the screen (either by swiping near the left edge or by clicking the hamburger button in the top left of the screen). This menu hosts the different features of the application, with each option either navigation to a fragment (corresponding with the feature), or launching a dialog in some cases. The DrawerLayout is in the second Activity, which serves as the master container for most of the application's fragments.
 
 - SQLite Database: All Profile, Account, Payee and Transaction information is stored in a database. The DB consists of four tables, each with a proper primary key (composite or standard) and foreign keys when necessary. The database is stored on the user's device.
 
-- Adapters: Personally created adapters are used to display custom information in ListView's and Spinner's. The adapters used are for accounts, as well as payments and transfers. 
+- Shared Preferences: Saving the current profile (logged into by the user), and all of its general info, accounts and transactions. When initially logging into a profile, all of the data from that profile is loaded from the database (stores all profile data). This operation is performed once, in which the profile data is stored into Shared Preferences and can be updated and loaded efficiently across the different activities. JSON is involved in the reading and writing of data into Shared Preferences.
 
-- Fundamental Programming Concepts: ArrayList, If statements, For loops, Constructor overloading, Accessor/Mutator methods, etc.
+- Adapters: Personally created adapters are used to display custom information in ListView's and Spinner's. The adapters used are for accounts and all transaction types (deposits, transfers and payments).
+
 
 # NOTABLE MENTIONS
 
-- The text that the user sees is found in strings.xml, if multiple language support is added, the strings in the file can be converted to the language of preference for the user
+- The app follows the Material Design guidelines, most noteably with the icons of the app. Also noticeable in the DrawerLayout, the custom tolbar and the 'Add' buttons in some of the fragments.
+- Resource files are used (best practice) for strings, colors, drawables, styles.
 - Runs on Android API 19 and up
 
 # CURRENTLY IN DEVELOPMENT
 
-- Updating the database code to have prepared staements, rather than string concatenation (defense against SQL injection)
-- Have all Transactions under the same adapter and Listview in AccountActivity
-- Allow 'Deposit' to be a type of transaction
-- Move the 'About' Page to the login screen, have as a question mark button. Possibly use Fragment rather than separate Activity
-- Clean up the code, enhance the UI, add more documentation
+While the application is completely functional, it is still a work in progress. New libraries, frameworks and features may be implemented down the line for where I see fit. The application will not be posted on the Google Play Store, but is a good way to practice Android skills, and learn new concepts later on as well.
