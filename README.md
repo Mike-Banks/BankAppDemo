@@ -1,4 +1,6 @@
-# BANK APP DEMO
+<video src="appDemo.webm" width="320" height="200" controls preload></video>
+
+# PROJECT DETAILS
 
 A Banking app made for Android using Android Studio. No real money is involved, it is a project to showcase my knowledge and practical skill in Android development with Java. The Application was developed using a MVC approach, using proper programming conventions, including documentation, error/exception handling, thorough program structure and memory efficiency.
 
