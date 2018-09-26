@@ -1,9 +1,8 @@
 package com.example.mikebanks.bankscorpfinancial;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,14 +13,13 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.mikebanks.bankscorpfinancial.Adapters.AccountAdapter;
 import com.example.mikebanks.bankscorpfinancial.Model.Account;
 import com.example.mikebanks.bankscorpfinancial.Model.Profile;
 import com.example.mikebanks.bankscorpfinancial.Model.db.ApplicationDB;
-import com.example.mikebanks.bankscorpfinancial.R;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -50,7 +48,7 @@ public class TransferFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View rootView =  inflater.inflate(R.layout.fragment_transfer, container, false);
@@ -106,9 +104,10 @@ public class TransferFragment extends Fragment {
 
         int receivingAccIndex = spnReceivingAccount.getSelectedItemPosition();
         boolean isNum = false;
+        double transferAmount = 0;
 
         try {
-            Double.parseDouble(edtTransferAmount.getText().toString());
+            transferAmount = Double.parseDouble(edtTransferAmount.getText().toString());
             isNum = true;
         } catch (Exception e) {
             Toast.makeText(getActivity(), "Please enter an amount to transfer", Toast.LENGTH_SHORT).show();
@@ -117,19 +116,17 @@ public class TransferFragment extends Fragment {
             if (spnSendingAccount.getSelectedItemPosition() == receivingAccIndex) {
                 Toast.makeText(getActivity(), "You cannot make a transfer to the same account", Toast.LENGTH_SHORT).show();
             }
-            else if(Double.parseDouble(edtTransferAmount.getText().toString()) < 0.01) {
+            else if(transferAmount < 0.01) {
                 Toast.makeText(getActivity(), "The minimum amount for a transfer is $0.01", Toast.LENGTH_SHORT).show();
 
-            } else if (Double.parseDouble(edtTransferAmount.getText().toString()) > userProfile.getAccounts().get(spnSendingAccount.getSelectedItemPosition()).getAccountBalance()) {
+            } else if (transferAmount > userProfile.getAccounts().get(spnSendingAccount.getSelectedItemPosition()).getAccountBalance()) {
 
                 Account acc = (Account) spnSendingAccount.getSelectedItem();
                 Toast.makeText(getActivity(), "The account," + " " + acc.toString() + " " + "does not have sufficient funds to make this transfer", Toast.LENGTH_LONG).show();
             } else {
 
                 int sendingAccIndex = spnSendingAccount.getSelectedItemPosition();
-
-                Double transferAmount = Double.parseDouble(edtTransferAmount.getText().toString());
-
+                
                 Account sendingAccount = (Account) spnSendingAccount.getItemAtPosition(sendingAccIndex);
                 Account receivingAccount = (Account) spnReceivingAccount.getItemAtPosition(receivingAccIndex);
 
@@ -154,10 +151,9 @@ public class TransferFragment extends Fragment {
 
                 SharedPreferences.Editor prefsEditor = userPreferences.edit();
                 json = gson.toJson(userProfile);
-                prefsEditor.putString("LastProfileUsed", json);
-                prefsEditor.commit();
+                prefsEditor.putString("LastProfileUsed", json).apply();
 
-                Toast.makeText(getActivity(), "Transfer of $" + String.format("%.2f",transferAmount) + " successfully made", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Transfer of $" + String.format(Locale.getDefault(), "%.2f",transferAmount) + " successfully made", Toast.LENGTH_SHORT).show();
             }
         }
     }

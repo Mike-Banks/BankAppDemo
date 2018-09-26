@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -29,13 +30,10 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class AccountOverviewFragment extends Fragment {
 
-    private boolean displayAccountDialogOnLaunch;
-
-    FloatingActionButton fab;
+    private FloatingActionButton fab;
     private ListView lstAccounts;
     private TextView txtTitleMessage;
     private TextView txtDetailMessage;
-
     private EditText edtAccountName;
     private EditText edtInitAccountBalance;
     private Button btnCancel;
@@ -44,6 +42,8 @@ public class AccountOverviewFragment extends Fragment {
     private Gson gson;
     private Profile userProfile;
     private SharedPreferences userPreferences;
+
+    private boolean displayAccountDialogOnLaunch;
 
     private View.OnClickListener addAccountClickListener = new View.OnClickListener() {
         @Override
@@ -82,7 +82,7 @@ public class AccountOverviewFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_account_overview, container, false);
@@ -98,17 +98,17 @@ public class AccountOverviewFragment extends Fragment {
 
         setValues();
 
-        if (displayAccountDialogOnLaunch || userProfile.getAccounts().size() == 0) {
+        if (displayAccountDialogOnLaunch) {
             displayAccountDialog();
+            displayAccountDialogOnLaunch = false;
         }
         return rootView;
     }
 
     private void displayAccountDialog() {
 
-        accountDialog = new Dialog(this.getActivity());
+        accountDialog = new Dialog(getActivity());
         accountDialog.setContentView(R.layout.account_dialog);
-
 
         accountDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
 
@@ -198,11 +198,12 @@ public class AccountOverviewFragment extends Fragment {
 
         String balance = edtInitAccountBalance.getText().toString();
         boolean isNum = false;
+        double initDepositAmount = 0;
 
         if (!(edtAccountName.getText().toString().equals(""))) {
 
             try {
-                Double.parseDouble(edtInitAccountBalance.getText().toString());
+                initDepositAmount = Double.parseDouble(edtInitAccountBalance.getText().toString());
                 isNum = true;
             } catch (Exception e) {
                 if (!edtInitAccountBalance.getText().toString().equals("")) {
@@ -234,8 +235,8 @@ public class AccountOverviewFragment extends Fragment {
 
                     if (!balance.equals("")) {
                         if (isNum) {
-                           if (Double.parseDouble(edtInitAccountBalance.getText().toString()) >= 0.01) {
-                               userProfile.getAccounts().get(userProfile.getAccounts().size()-1).addDepositTransaction(Double.parseDouble(edtInitAccountBalance.getText().toString()));
+                           if (initDepositAmount >= 0.01) {
+                               userProfile.getAccounts().get(userProfile.getAccounts().size()-1).addDepositTransaction(initDepositAmount);
                                applicationDb.saveNewTransaction(userProfile, userProfile.getAccounts().get(userProfile.getAccounts().size()-1).getAccountNo(), userProfile.getAccounts().get(userProfile.getAccounts().size()-1).getTransactions().get(userProfile.getAccounts().get(userProfile.getAccounts().size()-1).getTransactions().size()-1));
                            }
                         }

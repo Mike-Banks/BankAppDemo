@@ -22,7 +22,6 @@ public class CreateProfileFragment extends Fragment {
     private EditText edtUsername;
     private EditText edtPassword;
     private EditText edtPasswordConfirm;
-    private Button btnCreateAccount;
 
     public CreateProfileFragment() {
         // Required empty public constructor
@@ -46,7 +45,7 @@ public class CreateProfileFragment extends Fragment {
         edtUsername = rootView.findViewById(R.id.edt_username);
         edtPassword = rootView.findViewById(R.id.edt_password);
         edtPasswordConfirm = rootView.findViewById(R.id.edt_password_confirm);
-        btnCreateAccount = rootView.findViewById(R.id.btn_create_account);
+        Button btnCreateAccount = rootView.findViewById(R.id.btn_create_account);
         btnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -82,7 +81,7 @@ public class CreateProfileFragment extends Fragment {
         else if (!(edtPassword.getText().toString().equals(edtPasswordConfirm.getText().toString()))) {
             Toast.makeText(getActivity(), R.string.password_mismatch, Toast.LENGTH_SHORT).show();
         }
-        else if (usernameTaken == true) {
+        else if (usernameTaken) {
             Toast.makeText(getActivity(), "A User has already taken that username", Toast.LENGTH_SHORT).show();
         }
         else {

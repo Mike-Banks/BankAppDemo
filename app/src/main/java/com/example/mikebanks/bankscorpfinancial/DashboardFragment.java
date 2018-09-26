@@ -2,6 +2,7 @@ package com.example.mikebanks.bankscorpfinancial;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,12 +25,6 @@ public class DashboardFragment extends Fragment {
     private TextView txtMessage;
     private Button btnAddAccount;
 
-    private SharedPreferences userPreferences;
-
-    private String json;
-    private Gson gson;
-    private Profile userProfile;
-
     public DashboardFragment() {
         // Required empty public constructor
     }
@@ -40,7 +35,7 @@ public class DashboardFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         // Inflate the layout for this fragment
@@ -61,10 +56,10 @@ public class DashboardFragment extends Fragment {
      */
     private void setupViews() {
 
-        userPreferences = getActivity().getSharedPreferences("LastProfileUsed", MODE_PRIVATE);
-        gson = new Gson();
-        json = userPreferences.getString("LastProfileUsed", "");
-        userProfile = gson.fromJson(json, Profile.class);
+        SharedPreferences userPreferences = getActivity().getSharedPreferences("LastProfileUsed", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = userPreferences.getString("LastProfileUsed", "");
+        Profile userProfile = gson.fromJson(json, Profile.class);
 
         btnAddAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,6 +77,7 @@ public class DashboardFragment extends Fragment {
         } else {
             txtMessage.setVisibility(View.GONE);//TEMP to clear field
             btnAddAccount.setVisibility(View.GONE);
+
             //TODO: Have message say some kind of statistic about how many transactions they have made today
         }
 

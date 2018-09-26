@@ -3,6 +3,7 @@ package com.example.mikebanks.bankscorpfinancial.Adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,15 +31,9 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
         this.resource = resource;
     }
 
-    /**
-     * function that gets the view from the adapter
-     * @param position
-     * @param convertView
-     * @param parent
-     * @return
-     */
     @Override
-    public View getView (int position, View convertView, ViewGroup parent) {
+    @NonNull
+    public View getView (int position, View convertView, @NonNull ViewGroup parent) {
 
         if (convertView == null) {
 
@@ -69,7 +64,6 @@ public class TransactionAdapter extends ArrayAdapter<Transaction> {
             txtTransactionAmount.setTextColor(getContext().getResources().getColor(android.R.color.holo_blue_light));
         } else if (transaction.getTransactionType() == Transaction.TRANSACTION_TYPE.DEPOSIT) {
             imgTransactionIcon.setImageResource(R.drawable.lst_deposit_icon);
-            //txtTransactionInfo.setText("");
             txtTransactionInfo.setVisibility(View.GONE);
             txtTransactionAmount.setTextColor(getContext().getResources().getColor(android.R.color.holo_green_dark));
         }

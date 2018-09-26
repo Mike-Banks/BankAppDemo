@@ -2,6 +2,7 @@ package com.example.mikebanks.bankscorpfinancial.Adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,8 @@ public class AccountAdapter extends ArrayAdapter<Account> {
      * @return
      */
     @Override
-    public View getView (int position, View convertView, ViewGroup parent) {
+    @NonNull
+    public View getView (int position, View convertView, @NonNull ViewGroup parent) {
 
         if (convertView == null) {
 

@@ -11,11 +11,6 @@ import com.example.mikebanks.bankscorpfinancial.Model.Payee;
 import com.example.mikebanks.bankscorpfinancial.Model.Profile;
 import com.example.mikebanks.bankscorpfinancial.Model.Transaction;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -154,7 +149,7 @@ public class ApplicationDB {
         database.close();
     }
 
-    public Profile saveNewProfile(Profile profile) {
+    public void saveNewProfile(Profile profile) {
 
         database = openHelper.getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -169,12 +164,10 @@ public class ApplicationDB {
         profile.setDbId(id);
 
         database.close();
-
-        return profile;
     }
 
     //TODO: Overwrite or remove payee?
-    public Payee saveNewPayee(Profile profile, Payee payee) {
+    public void saveNewPayee(Profile profile, Payee payee) {
         database = openHelper.getWritableDatabase();
 
         ContentValues cv = new ContentValues();
@@ -188,8 +181,6 @@ public class ApplicationDB {
         payee.setDbId(id);
 
         database.close();
-
-        return payee;
     }
 
     public void saveNewTransaction(Profile profile, String accountNo, Transaction transaction) {
@@ -240,7 +231,7 @@ public class ApplicationDB {
                 new String[] {String.valueOf(profile.getDbId()), account.getAccountNo()});
         database.close();
     }
-    public Account saveNewAccount(Profile profile, Account account) {
+    public void saveNewAccount(Profile profile, Account account) {
 
         database = openHelper.getWritableDatabase();
 
@@ -255,8 +246,6 @@ public class ApplicationDB {
         account.setDbID(id);
 
         database.close();
-
-        return account;
     }
 
     public ArrayList<Profile> getAllProfiles(){

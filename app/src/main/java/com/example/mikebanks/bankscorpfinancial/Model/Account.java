@@ -1,6 +1,7 @@
 package com.example.mikebanks.bankscorpfinancial.Model;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Class used to create an account for the user
@@ -14,12 +15,6 @@ public class Account {
     private ArrayList<Transaction> transactions;
     private long dbID;
 
-    /**
-     * Constructor used to initialize all of the values
-     * @param accountName
-     * @param accountNo
-     * @param accountBalance
-     */
     public Account (String accountName, String accountNo, double accountBalance) {
         this.accountName = accountName;
         this.accountNo = accountNo;
@@ -44,29 +39,15 @@ public class Account {
     public double getAccountBalance() {
         return accountBalance;
     }
-    public long getDbID() { return dbID; }
 
     public void setDbID(long dbID) { this.dbID = dbID; }
 
-    /**
-     * Setter for setting the account balance
-     * @param accountBalance
-     */
     public void setAccountBalance(double accountBalance) { this.accountBalance = accountBalance; }
 
-    /**
-     * method used to get the array list of transactions
-     * @return
-     */
     public ArrayList<Transaction> getTransactions() {
         return transactions;
     }
 
-    /**
-     * method used to add a payment
-     * @param payee
-     * @param amount
-     */
     public void addPaymentTransaction (String payee, double amount) {
         accountBalance -= amount;
 
@@ -86,30 +67,22 @@ public class Account {
         accountBalance += amount;
 
         //TODO: Could be a better way - ie. each time a deposit is added, add it to the master count (global variable - persisted?)
-        int depositscount = 0;
+        int depositsCount = 0;
 
         for (int i = 0; i < transactions.size(); i++) {
             if (transactions.get(i).getTransactionType() == Transaction.TRANSACTION_TYPE.DEPOSIT)  {
-                depositscount++;
+                depositsCount++;
             }
         }
 
-        Transaction deposit = new Transaction("T" + (transactions.size() + 1) + "-D" + (depositscount+1), amount);
+        Transaction deposit = new Transaction("T" + (transactions.size() + 1) + "-D" + (depositsCount+1), amount);
         transactions.add(deposit);
     }
 
-    /**
-     * method used to show the account as a string
-     * @return
-     */
     public String toString() {
-        return (accountName + " ($" + String.format("%.2f",accountBalance) + ")");
+        return (accountName + " ($" + String.format(Locale.getDefault(), "%.2f",accountBalance) + ")");
     }
 
-    /**
-     * method used to show the account as a string for transactions
-     * @return
-     */
     public String toTransactionString() { return (accountName + " (" + accountNo + ")"); }
 
     public void setTransactions(ArrayList<Transaction> transactions) {

@@ -20,24 +20,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mikebanks.bankscorpfinancial.Model.Account;
-import com.example.mikebanks.bankscorpfinancial.Model.Payee;
 import com.example.mikebanks.bankscorpfinancial.Model.Profile;
-import com.example.mikebanks.bankscorpfinancial.Model.Transaction;
 import com.example.mikebanks.bankscorpfinancial.Model.db.ApplicationDB;
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
+import java.util.Locale;
 
 public class DrawerActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -51,20 +47,15 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
     private Toolbar toolbar;
     private ActionBarDrawerToggle toggle;
 
-    private Fragment fragment;
-    FragmentManager fragmentManager;
-    FragmentTransaction ft;
+    private SharedPreferences userPreferences;
+    private Gson gson;
+    private String json;
 
-    SharedPreferences userPreferences;
-    Gson gson;
-    String json;
-
-    ApplicationDB applicationDb;
-    Profile userProfile;
+    private Profile userProfile;
 
     private Dialog depositDialog;
-    Spinner spnAccounts;
-    ArrayAdapter<Account> accountAdapter;
+    private Spinner spnAccounts;
+    private ArrayAdapter<Account> accountAdapter;
     private EditText edtDepositAmount;
     private Button btnCancel;
     private Button btnDeposit;
@@ -94,7 +85,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
     };
 
     public void manualNavigation(manualNavID id, Bundle bundle) {
-        ft = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
 
         if (id == manualNavID.DASHBOARD_ID) {
             ft.replace(R.id.flContent, new DashboardFragment()).commit();
@@ -180,11 +171,9 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
 
         View headerView = navView.getHeaderView(0);
 
-        ImageView imgProfilePic = findViewById(R.id.img_profile);
+        //ImageView imgProfilePic = findViewById(R.id.img_profile); //TODO: set the profile image
         TextView txtName = headerView.findViewById(R.id.txt_name);
         TextView txtUsername = headerView.findViewById(R.id.txt_username);
-
-        //TODO: set the profile image
 
         String name = userProfile.getFirstName() + " " + userProfile.getLastName();
         txtName.setText(name);
@@ -193,7 +182,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
     }
 
     private void loadFromDB() {
-        applicationDb = new ApplicationDB(getApplicationContext());
+        ApplicationDB applicationDb = new ApplicationDB(getApplicationContext());
 
         userProfile.setPayeesFromDB(applicationDb.getPayeesFromCurrentProfile(userProfile.getDbId()));
         userProfile.setAccountsFromDB(applicationDb.getAccountsFromCurrentProfile(userProfile.getDbId()));
@@ -292,9 +281,10 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
             depositAmount = Double.parseDouble(edtDepositAmount.getText().toString());
             isNum = true;
         } catch (Exception e) {
+            e.printStackTrace();
         }
 
-        if (depositAmount < 0.01 && isNum == false) {
+        if (depositAmount < 0.01 && !isNum) {
             Toast.makeText(this, "Please enter a valid amount", Toast.LENGTH_SHORT).show();
         } else {
 
@@ -311,13 +301,14 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
             applicationDb.saveNewTransaction(userProfile, account.getAccountNo(),
                     account.getTransactions().get(account.getTransactions().size()-1));
 
-            Toast.makeText(this, "Deposit of $" + String.format("%.2f",depositAmount) + " " + "made successfully", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Deposit of $" + String.format(Locale.getDefault(), "%.2f",depositAmount) + " " + "made successfully", Toast.LENGTH_SHORT).show();
 
             accountAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, userProfile.getAccounts());
             accountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             spnAccounts.setAdapter(accountAdapter);
 
             //TODO: Add checkbox if the user wants to make more than one deposit
+
             depositDialog.dismiss();
             drawerLayout.closeDrawers();
             manualNavigation(manualNavID.ACCOUNTS_ID, null);
@@ -365,7 +356,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         json = userPreferences.getString("LastProfileUsed", "");
         userProfile = gson.fromJson(json, Profile.class);
 
-        fragmentManager = getSupportFragmentManager();
+        FragmentManager fragmentManager = getSupportFragmentManager();
 
         // Handle navigation view item clicks here.
         Class fragmentClass = null;
@@ -415,7 +406,7 @@ public class DrawerActivity extends AppCompatActivity implements NavigationView.
         }
 
         try {
-            fragment = (Fragment) fragmentClass.newInstance();
+            Fragment fragment = (Fragment) fragmentClass.newInstance();
             fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
 
             item.setChecked(true);

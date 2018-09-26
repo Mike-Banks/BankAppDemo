@@ -2,6 +2,7 @@ package com.example.mikebanks.bankscorpfinancial;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +13,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.mikebanks.bankscorpfinancial.Adapters.AccountAdapter;
-import com.example.mikebanks.bankscorpfinancial.Adapters.DepositAdapter;
-import com.example.mikebanks.bankscorpfinancial.Adapters.PaymentAdapter;
 import com.example.mikebanks.bankscorpfinancial.Adapters.TransactionAdapter;
-import com.example.mikebanks.bankscorpfinancial.Adapters.TransferAdapter;
 import com.example.mikebanks.bankscorpfinancial.Model.Account;
 import com.example.mikebanks.bankscorpfinancial.Model.Profile;
 import com.example.mikebanks.bankscorpfinancial.Model.Transaction;
@@ -26,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.Locale;
 
 import static android.content.Context.MODE_PRIVATE;
 import static android.view.View.GONE;
@@ -119,7 +117,7 @@ public class TransactionFragment extends Fragment {
             if (adapterView.getId() == spnAccounts.getId()) {
                 selectedAccountIndex = i;
                 txtAccountName.setText("Account: " + userProfile.getAccounts().get(selectedAccountIndex).toTransactionString());
-                txtAccountBalance.setText("Balance: $" + String.format("%.2f",userProfile.getAccounts().get(selectedAccountIndex).getAccountBalance()));
+                txtAccountBalance.setText("Balance: $" + String.format(Locale.getDefault(), "%.2f",userProfile.getAccounts().get(selectedAccountIndex).getAccountBalance()));
             }
             else if (adapterView.getId() == spnTransactionTypeFilter.getId()) {
                 transFilter = transFilter.getTransFilter(i);
@@ -137,15 +135,8 @@ public class TransactionFragment extends Fragment {
         }
     };
 
-    private ArrayAdapter<Account> accountAdapter;
-    private ArrayAdapter<String> transTypeAdapter;
-    private ArrayAdapter<String> dateFilterAdapter;
-
     private ListView lstTransactions;
 
-    private Gson gson;
-    private String json;
-    private SharedPreferences userPreferences;
     private Profile userProfile;
 
     private int selectedAccountIndex;
@@ -164,7 +155,7 @@ public class TransactionFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View rootView = inflater.inflate(R.layout.fragment_transaction, container, false);
@@ -194,9 +185,9 @@ public class TransactionFragment extends Fragment {
      */
     private void setValues() {
 
-        userPreferences = getActivity().getSharedPreferences("LastProfileUsed", MODE_PRIVATE);
-        gson = new Gson();
-        json = userPreferences.getString("LastProfileUsed", "");
+        SharedPreferences userPreferences = getActivity().getSharedPreferences("LastProfileUsed", MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = userPreferences.getString("LastProfileUsed", "");
         userProfile = gson.fromJson(json, Profile.class);
 
         transFilter = TransactionTypeFilter.ALL_TRANSACTIONS;
@@ -208,20 +199,20 @@ public class TransactionFragment extends Fragment {
         spnAccounts.setSelection(selectedAccountIndex);
 
         txtAccountName.setText("Account: " + userProfile.getAccounts().get(selectedAccountIndex).toTransactionString());
-        txtAccountBalance.setText("Balance: $" + String.format("%.2f",userProfile.getAccounts().get(selectedAccountIndex).getAccountBalance()));
+        txtAccountBalance.setText("Balance: $" + String.format(Locale.getDefault(), "%.2f",userProfile.getAccounts().get(selectedAccountIndex).getAccountBalance()));
     }
 
     private void setupSpinners() {
 
-        accountAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, userProfile.getAccounts());
+        ArrayAdapter<Account> accountAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, userProfile.getAccounts());
         accountAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnAccounts.setAdapter(accountAdapter);
 
-        transTypeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.transaction_filters));
+        ArrayAdapter<String> transTypeAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.transaction_filters));
         transTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnTransactionTypeFilter.setAdapter(transTypeAdapter);
 
-        dateFilterAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.date_filters));
+        ArrayAdapter<String> dateFilterAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, getResources().getStringArray(R.array.date_filters));
         dateFilterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spnDateFilter.setAdapter(dateFilterAdapter);
 
@@ -283,6 +274,7 @@ public class TransactionFragment extends Fragment {
         }
         if (payments.size() == 0) {
             txtPaymentsMsg.setVisibility(VISIBLE);
+            lstTransactions.setVisibility(GONE);
         } else {
             lstTransactions.setVisibility(VISIBLE);
             TransactionAdapter transactionAdapter = new TransactionAdapter(getActivity(), R.layout.lst_transactions, payments);
@@ -300,6 +292,7 @@ public class TransactionFragment extends Fragment {
         }
         if (transfers.size() == 0) {
             txtTransfersMsg.setVisibility(VISIBLE);
+            lstTransactions.setVisibility(GONE);
         } else {
             lstTransactions.setVisibility(VISIBLE);
             TransactionAdapter transactionAdapter = new TransactionAdapter(getActivity(), R.layout.lst_transactions, transfers);
@@ -317,6 +310,7 @@ public class TransactionFragment extends Fragment {
         }
         if (deposits.size() == 0) {
             txtDepositMsg.setVisibility(VISIBLE);
+            lstTransactions.setVisibility(GONE);
         } else {
             lstTransactions.setVisibility(VISIBLE);
             TransactionAdapter transactionAdapter = new TransactionAdapter(getActivity(), R.layout.lst_transactions, deposits);

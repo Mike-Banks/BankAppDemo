@@ -8,7 +8,6 @@ import java.util.Date;
 /**
  * Created by mikebanks on 2018-01-04.
  */
-
 public class Transaction {
 
     public enum TRANSACTION_TYPE {
@@ -28,12 +27,6 @@ public class Transaction {
     private TRANSACTION_TYPE transactionType;
     private long dbId;
 
-    /**
-     * Constructor used to initialize all of the values - used for creating payments
-     * @param transactionID
-     * @param payee
-     * @param amount
-     */
     public Transaction (String transactionID, String payee, double amount) {
         this.transactionID = transactionID;
         timestamp = DATE_FORMAT.format(new Date());
@@ -61,13 +54,6 @@ public class Transaction {
         this.dbId = dbId;
     }
 
-    /**
-     * Constructor used to initialize all of the values - used for creating transfers
-     * @param transactionID
-     * @param sendingAccount
-     * @param destinationAccount
-     * @param amount
-     */
     public Transaction(String transactionID, String sendingAccount, String destinationAccount, double amount) {
         this.transactionID = transactionID;
         this.timestamp = DATE_FORMAT.format(new Date());
@@ -102,7 +88,6 @@ public class Transaction {
         return transactionType;
     }
 
-    public long getDbId() { return dbId; }
     public void setDbId(long dbId) { this.dbId = dbId; }
 
 }

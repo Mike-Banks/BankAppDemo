@@ -1,14 +1,10 @@
 package com.example.mikebanks.bankscorpfinancial.Model;
 
-import android.content.Context;
-
 import java.util.ArrayList;
 
 /**
  * Created by mikebanks on 2017-12-05.
  */
-
-
 public class Profile {
 
     private String firstName;
@@ -20,14 +16,6 @@ public class Profile {
     private ArrayList<Payee> payees;
     private long dbId;
 
-    /**
-     * Constructor used to initialize all of the values
-     * @param firstName
-     * @param lastName
-     * @param country
-     * @param username
-     * @param password
-     */
     public Profile (String firstName, String lastName, String country, String username, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -66,14 +54,9 @@ public class Profile {
     public long getDbId() { return dbId; }
     public void setDbId(long dbId) { this.dbId = dbId; }
 
-    /**
-     * method used to add an account to the profile
-     * @param accountName
-     * @param accountBalance
-     */
     public void addAccount(String accountName, double accountBalance) {
-        String accno = "A" + (accounts.size() + 1);
-        Account account = new Account(accountName, accno, accountBalance);
+        String accNo = "A" + (accounts.size() + 1);
+        Account account = new Account(accountName, accNo, accountBalance);
         accounts.add(account);
     }
     public void setAccountsFromDB(ArrayList<Account> accounts) {
@@ -101,10 +84,6 @@ public class Profile {
         sendingAcc.getTransactions().add(new Transaction("T" + (sendingAcc.getTransactions().size() + 1) + "-T" + (sendingAccTransferCount+1), sendingAcc.toTransactionString(), receivingAcc.toTransactionString(), transferAmount));
         receivingAcc.getTransactions().add(new Transaction("T" + (receivingAcc.getTransactions().size() + 1) + "-T" + (receivingAccTransferCount+1), sendingAcc.toTransactionString(), receivingAcc.toTransactionString(), transferAmount));
     }
-    /**
-     * method used to add a payee to the profile
-     * @param payeeName
-     */
 
     public void addPayee(String payeeName) {
         String payeeID = "P" + (payees.size() + 1);
