@@ -33,4 +33,4 @@ The app starts out with a login screen, in which the user can either log in with
 
 # CURRENTLY IN DEVELOPMENT
 
-While the application is completely functional, it is still a work in progress. New libraries, frameworks and features may be implemented down the line for where I see fit. The application will not be posted on the Google Play Store, but is a good way to practice Android skills, and learn new concepts later on as well.
+While the application is completely functional, it remains somewhat of a work in progress. New libraries, frameworks and features may be implemented down the line for where I see fit. The application will not be posted on the Google Play Store, but is a good way to practice Android skills, and learn new concepts later on as well.
