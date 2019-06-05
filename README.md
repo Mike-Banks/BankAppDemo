@@ -23,7 +23,7 @@ The app starts out with a login screen, in which the user can either log in with
 
 - Shared Preferences: Saving the current profile (logged into by the user), and all of its general info, accounts and transactions. When initially logging into a profile, all of the data from that profile is loaded from the database (stores all profile data). This operation is performed once, in which the profile data is stored into Shared Preferences and can be updated and loaded efficiently across the different activities. JSON is involved in the reading and writing of data into Shared Preferences.
 
-- Adapters: Personally created adapters are used to display custom information in ListView's and Spinner's. The adapters used are for accounts and all transaction types (deposits, transfers and payments).
+- Array Adapters: Custom array adapters are used to display information in ListView's and Spinner's. The adapters used are for accounts and all transaction types (deposits, transfers and payments).
 
 
 # NOTABLE MENTIONS
@@ -34,4 +34,4 @@ The app starts out with a login screen, in which the user can either log in with
 
 # CURRENTLY IN DEVELOPMENT
 
-While the application is completely functional, it remains somewhat of a work in progress. New libraries, frameworks and features may be implemented down the line for where I see fit. The application will not be posted on the Google Play Store, but is a good way to practice Android skills, and learn new concepts later on as well.
+While the application is completely functional, it remains somewhat of a work in progress. New libraries, frameworks and features may be implemented down the line for where I see fit. The application will not be posted on the Google Play Store, but will rather be a project I can showcase and practice Android development with Java.
