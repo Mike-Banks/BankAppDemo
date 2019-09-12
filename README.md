@@ -9,9 +9,9 @@ The app starts out with a login screen, in which the user can either log in with
 
 # ANDROID DEVELOPMENT CONCEPTS USED
 
-- Multiple Activities: There are two activities: one which has the fragments for logging in and creating a profile, and the other for hosting all of the features the bank app has, including account overview, payments, transactions, etc. The activites serve as containers for the different fragments throughout the application. The activities themselves do not display a view, but rather host the navigation code (among other things) to travel between fragments.
+- Multiple Activities: There are two activities: one which has the fragments for logging in and creating a profile, and the other for hosting all of the features the bank app has, including account overview, payments, transactions, etc. The activites serve as containers for the different fragments throughout the application. Intents are used to pass data from one activity to another. The activities themselves do not display a view, but rather host the navigation code (among other things) to travel between fragments. 
 
-- Multiple Fragments: What the user actually sees comes from the fragments of the application. These fragments are almost always launched from the activity that wraps them. Bundles are used to pass data from one fragment to another
+- Multiple Fragments: What the user actually sees comes from the fragments of the application. These fragments are almost always launched from the activity that wraps them. Bundles are used to pass data from one fragment to another.
 
 - Well-desgined UI Layouts: Multiple layout files are used, using a well-thought design that keeps the simplicity of the app, while serving optimal functionality. Most layout files are used for the fragments, while some are used for menus in the application, as well as custom layouts for dialogs.
 
